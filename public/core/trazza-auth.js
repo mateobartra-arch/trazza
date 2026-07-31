@@ -1,7 +1,7 @@
 /* ==========================================================================
    TRAZZA — Autenticación y autorización COMPARTIDA (multi-tenant)
    --------------------------------------------------------------------------
-   Port de assets/auth.js (MISAGI) al núcleo reutilizable TRAZZA. Una sola
+   Port del auth.js del sistema de origen al núcleo reutilizable TRAZZA. Una sola
    fuente de verdad para login y permisos, ahora parametrizada por tenant
    a través de window.TRAZZA_CONFIG (ver trazza.config.js).
 
@@ -115,11 +115,12 @@
 
   // Fuerza el cambio de contraseña en el primer ingreso (flag debeCambiarClave).
   //
-  // ACTIVADO POR DEFECTO, y esto es deliberado. En MISAGI la contraseña
-  // inicial era el DNI del trabajador, el flag debeCambiarClave se creaba en
-  // false y además esta constante estaba en false: dos capas apagadas, así
-  // que cualquiera que supiera el DNI de un empleado activo entraba con sus
-  // permisos. Un DNI no es un secreto; está en el fotocheck.
+  // ACTIVADO POR DEFECTO, y esto es deliberado. Ninguna cuenta debe quedarse
+  // con la clave con la que nació. Cuando la clave inicial se deriva de un
+  // dato que la persona lleva impreso encima —un documento de identidad, un
+  // código de fotocheck— y además el sistema nunca obliga a cambiarla, eso no
+  // es una contraseña débil: es una cuenta abierta para cualquiera que
+  // conozca ese dato.
   // Se puede apagar por tenant con TRAZZA_CONFIG.forzarCambioClave === false,
   // pero apagarlo tiene que ser una decisión escrita de alguien, no el valor
   // que quedó por descuido.
