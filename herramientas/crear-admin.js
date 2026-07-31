@@ -73,10 +73,9 @@ if (!clave)   morir("Falta --clave");
 if (!empresa) morir("Falta --empresa (el mismo empresaId que quedó en trazza.config.js)");
 if (correo.indexOf("@") < 0) morir("--correo no parece un correo: " + correo);
 
-// La contraseña inicial en MISAGI era el DNI del trabajador. Un DNI no es un
-// secreto: está impreso en el fotocheck que la persona lleva colgado. Este
-// producto no vuelve a nacer con esa deuda, y menos en la cuenta que tiene
-// permiso sobre todo.
+// Un número de documento no es un secreto: está impreso en el fotocheck que la
+// persona lleva colgado. Una clave derivada de un dato así no protege nada, y
+// menos en la cuenta que tiene permiso sobre todo.
 if (clave.length < 12) morir("La clave debe tener al menos 12 caracteres. Esta es la cuenta que lo ve todo.");
 if (/^\d+$/.test(clave)) morir("La clave no puede ser solo números (y mucho menos un DNI).");
 if (areas.indexOf("admin") < 0) areas.unshift("admin");
