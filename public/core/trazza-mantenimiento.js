@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    POR QUÉ EXISTE
 
-   En MISAGI el módulo de mantenimiento produce cuatro entregables en Excel:
+   En el sistema de origen el módulo de mantenimiento produce cuatro entregables en Excel:
    Correctivos, Matriz de neumáticos, MP Ejecutado y MP Programado. DOS DE
    LOS CUATRO SALEN EN BLANCO. La causa está en entregables.js:187-206: la
    consulta de la línea 191 apunta a `mantenimiento/mp_plan`, una colección
@@ -22,7 +22,7 @@
    de código:
 
    1. EL PLAN PREVENTIVO NO ES UNA COLECCIÓN, ES UN PARÁMETRO.
-      En MISAGI el plan está hardcodeado para 7 placas (estatus:3823,
+      En el sistema de origen el plan está escrito a fuego para 7 placas (estatus:3823,
       PLAN_PREVENTIVO) y ADEMÁS se lee de una colección fantasma. Las dos
       cosas están mal para un producto multi-cliente: la primera obliga a
       desplegar código para dar de alta un camión, la segunda no existe.
@@ -76,7 +76,7 @@
   /* ======================================================================
      1. NEUMÁTICOS — el mínimo de las tres lecturas
      ----------------------------------------------------------------------
-     MISAGI mide tres puntos de profundidad por neumático y clasifica con el
+     El sistema de origen mide tres puntos de profundidad por neumático y clasifica con el
      MÍNIMO, no con el promedio (estatus:3251-3264). Es la decisión correcta
      y conviene dejarla escrita: un neumático con 12/12/4 mm no está a 9.3 mm
      de vida, está gastado en un punto y ese punto es el que revienta en la
@@ -211,7 +211,7 @@
 
      La clave "_todas" aplica a toda la flota; una clave de placa AGREGA
      tareas propias de esa unidad. Así dar de alta un camión no requiere
-     tocar el plan: hereda el de la flota. En MISAGI eso obligaba a editar un
+     tocar el plan: hereda el de la flota. En el sistema de origen eso obligaba a editar un
      literal en el código (estatus:3823, siete placas).
      ====================================================================== */
   function tareasDe(plan, unidad) {
@@ -453,7 +453,7 @@
       return [f.placa, f.sistema, f.tarea, f.cadaKm, f.cadaDias, f.ultimaFecha, f.odometroActual,
               f.venceOdometro, f.kmRestantes, f.venceFecha, f.diasRestantes, f.estado, f.origen];
     });
-    // El motivo es explícito y distingue los DOS casos que en MISAGI se veían
+    // El motivo es explícito y distingue los DOS casos que en el sistema de origen se veían
     // idénticos (hoja en blanco): no hay flota, o hay flota y no hay plan.
     var motivo = "";
     if (!unidades.length) motivo = "No hay unidades activas en el maestro de flota.";

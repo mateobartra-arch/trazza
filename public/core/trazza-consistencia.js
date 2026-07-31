@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    POR QUÉ EXISTE
    El punto 7 del changelog describe una auditoría hecha a mano sobre los
-   datos de MISAGI: placas huérfanas, GNL cargado a una unidad que no es GNL,
+   datos del sistema de origen: placas huérfanas, GNL cargado a una unidad que no es GNL,
    tipos de lavado fuera de catálogo, MTC duplicados, registros sin fecha ni
    costo. Y cierra con la frase que decide la prioridad de este archivo:
    "Es de lo más valioso para un producto multi-cliente (calidad de datos por

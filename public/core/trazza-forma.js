@@ -6,7 +6,7 @@
    Los motores de Trazza (utilidad, mantenimiento, consistencia) hablan un
    vocabulario: un viaje tiene `fechaSalida`, `fechaLlegada` y `cargado`; un
    gasto tiene `placa`, `fecha`, `monto` y `rubro`. Los documentos que hoy
-   están en la base de MISAGI hablan otro: `fechaInicio`, `fechaFin`,
+   están en la base de origen hablan otro: `fechaInicio`, `fechaFin`,
    `carga:"CARGADO"`, `costoTotal`, `modulo`. Los dos vocabularios describen
    exactamente el mismo hecho.
 
@@ -38,7 +38,7 @@
 
    3) Una falla de mantenimiento entra como rubro `correctivo`, no como
       `mantenimiento` ni como nada que la pantalla decida. Es deliberado: en
-      MISAGI el módulo de viajes tenía escrito a mano que el mantenimiento
+      el sistema de origen el módulo de viajes tenía escrito a mano que el mantenimiento
       no resta (`viajes:202`) mientras que gerencia/utilidad tenía escrito a
       mano que sí. Al nombrarlo `correctivo` la respuesta pasa a salir de
       `politica.correctivoResta`, que se lee de la configuración de la
@@ -67,7 +67,7 @@
      ------------------------------------------------------------------------
      Tres formas de decir lo mismo conviven hoy: `cargado` (booleano, la
      canónica), `vacio` (booleano, la negada) y `carga` (el texto "CARGADO"
-     o "VACIO" que escribió la pantalla de MISAGI). El orden de precedencia
+     o "VACIO" que escribió la pantalla de origen). El orden de precedencia
      es el de mayor a menor explicitud, y ante un documento que no dice
      nada la respuesta es `true`: un tramo se registra porque movió carga, y
      tratar como vacío lo que no se declaró convertiría un flete real en
@@ -233,7 +233,7 @@
   /* ------------------------------------------------------------------------
      ¿SE PUEDE CERRAR EL VIAJE?
      ------------------------------------------------------------------------
-     La misma lista que MISAGI tenía dentro de la pantalla, sacada aquí para
+     La misma lista que el sistema de origen tenía dentro de la pantalla, sacada aquí para
      que se pueda probar y para que la respuesta sea idéntica venga de donde
      venga (la tarjeta, el modal o una futura acción masiva). Devuelve el
      motivo en texto para mostrarlo, o "" si se puede.

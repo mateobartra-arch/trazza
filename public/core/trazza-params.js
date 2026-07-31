@@ -5,7 +5,7 @@
    El punto 5 del changelog describe el patrón sin nombrarlo del todo:
    "Parámetros de costo editables por periodo guardados en un doc de config
    (igual que el tipo de cambio) → auditable y sin redeploy". Y el punto 3
-   del cerebro de MISAGI describe lo mismo desde otro ángulo: "La tarifa se
+   del cerebro del sistema de origen describe lo mismo desde otro ángulo: "La tarifa se
    fotografía a la fecha del viaje".
 
    Son el mismo mecanismo. Un parámetro no tiene un valor: tiene un valor
@@ -27,12 +27,12 @@
    DÓNDE VIVEN
    En la colección top-level `config`, un documento por parámetro y tenant,
    con id "<empresaId>__<clave>". Es una colección propia y NO un documento
-   escondido dentro de `contabilidad` (que es como estaba en MISAGI:
+   escondido dentro de `contabilidad` (que es como estaba en el sistema de origen:
    contabilidad/_config_tc). Ese detalle importa: si el tipo de cambio vive
    dentro de la colección `contabilidad`, entonces por las reglas de
    seguridad solo puede leerlo quien tenga el área contabilidad — y el
    módulo de viajes, que es de operaciones, necesita el TC para convertir un
-   flete en dólares. En MISAGI eso no explotaba porque no había reglas
+   flete en dólares. En el sistema de origen eso no explotaba porque no había reglas
    reales. Aquí sí las hay, así que el parámetro tiene que vivir donde
    cualquier usuario activo del tenant pueda leerlo y solo su área dueña
    pueda escribirlo. Ver firestore.rules, match /config/{id}.
@@ -212,7 +212,7 @@
   //      hacia adelante: una tarifa que empieza el 15 no existe el 10.
   //   2. Una entrada sin `desde` se considera vigente desde siempre.
   //   3. Si el hecho es anterior a TODA la lista, corresponde la entrada más
-  //      antigua conocida, nunca la de hoy. Es lo que hacía MISAGI a
+  //      antigua conocida, nunca la de hoy. Es lo que hacía el sistema de origen a
   //      propósito (viajes/index.html:154) y es la decisión correcta: liquidar
   //      un viaje viejo a la tarifa de hoy infla el ingreso de un periodo ya
   //      cerrado.

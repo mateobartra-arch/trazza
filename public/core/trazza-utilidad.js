@@ -74,7 +74,7 @@
   /* ------------------------------------------------------------------------
      1) ATRIBUCIÓN — "los gastos se enganchan solos, por placa + rango"
      ------------------------------------------------------------------------
-     Regla del cerebro de MISAGI, motor nº2 (el diferenciador): un gasto no
+     Regla del cerebro del sistema de origen, motor nº2 (el diferenciador): un gasto no
      se asigna a mano a un viaje. Se engancha por placa normalizada y por
      fecha dentro del rango del viaje. Si dos viajes de la misma placa se
      solapan en esa fecha, gana el MÁS RECIENTE (el que empezó después).

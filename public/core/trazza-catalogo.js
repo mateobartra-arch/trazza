@@ -55,7 +55,14 @@
       if (!ESTADOS[m.estado || "activo"]) continue;
       if ((m.estado || "activo") === "oculto") continue;
       if (m.soloAdmin && !esAdmin()) continue;
-      if (m.area && !puedeVer(m.area)) continue;
+      // `todos:true` es la diferencia entre requireLogin y requireAccess.
+      // Hay módulos que son de la persona, no del área: sus datos, su boleta,
+      // su roster, sus vacaciones. Exigirle a un conductor permiso sobre todo
+      // Recursos Humanos para que vea SU boleta es la forma más rápida de que
+      // nadie use el sistema y todo vuelva a pedirse por WhatsApp. Estos
+      // módulos ya filtran por uid dentro de su propia página y en las reglas
+      // de Firestore; el permiso de área no aporta nada y sí estorba.
+      if (m.area && !m.todos && !puedeVer(m.area)) continue;
       out.push(copia(m));
     }
     if (opts.rubro) out = out.filter(function (m) { return m.rubro === opts.rubro; });
@@ -90,18 +97,18 @@
   }
 
   // ---- Agrupación dinámica por contenido (punto 1, generalizado) --------
-  // El roster de MISAGI decide el grupo de un conductor contando los códigos
-  // que tiene ese mes: los R* pesan para "RACIEMSA", los H/T/C/A* para
-  // "HUDBAY / OTRAS MINAS", y gana el que más aparece. Aquí eso queda como
-  // una función genérica: dada una lista de filas, una forma de extraer los
-  // códigos de cada fila, y una lista de grupos con su patrón, devuelve las
-  // filas repartidas.
+  // El roster decide el grupo de un conductor contando los códigos que tiene
+  // ese mes: gana el patrón que más aparece. Aquí eso queda como una función
+  // genérica: dada una lista de filas, una forma de extraer los códigos de
+  // cada fila, y una lista de grupos con su patrón, devuelve las filas
+  // repartidas. Los patrones y las etiquetas viven en trazza.config.js
+  // (rosterGrupos), nunca aquí: los destinos son del cliente, no del motor.
   //
   //   agrupar(filas, {
   //     codigos: function(fila){ return Object.values(fila.dias || {}); },
   //     grupos: [
-  //       { id:"raciemsa", label:"RACIEMSA",           patron:/^R/ },
-  //       { id:"minas",    label:"HUDBAY / OTRAS MINAS", patron:/^[HTCA]/ }
+  //       { id:"servicios",   label:"SERVICIOS",   patron:/^S/ },
+  //       { id:"operaciones", label:"OPERACIONES", patron:/^O/ }
   //     ],
   //     sinGrupo: "SIN ASIGNAR"
   //   })

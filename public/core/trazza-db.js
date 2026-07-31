@@ -1,6 +1,6 @@
 /* ==========================================================================
    TRAZZA — Capa de datos compartida (fusión de crud.js + la parte de datos
-   de registro.js, limpia de todo lo específico de MISAGI)
+   de registro.js, limpia de todo lo específico de un cliente)
    --------------------------------------------------------------------------
    Este archivo NO pinta pantallas (eso lo siguen haciendo los módulos de
    cada app, igual que antes). Expone solo el acceso a Firestore que antes
@@ -9,7 +9,7 @@
    de init()). Aquí queda aislado y con el aislamiento por tenant aplicado
    SIEMPRE, no como responsabilidad de cada módulo.
 
-   Cambio de fondo respecto al original: en MISAGI el único discriminador
+   Cambio de fondo respecto al original: en el sistema de origen el único discriminador
    de datos era el campo "modulo" dentro de una colección compartida por
    área (ej. la colección "operaciones" mezcla los módulos "combustible",
    "rutas", "gnl", etc.). Eso funcionaba para una sola empresa. Para
@@ -26,7 +26,7 @@
    misma carpeta) para la lista de índices a desplegar con:
      firebase deploy --only firestore:indexes
    Las colecciones que usan el patrón empresaId+modulo son (según el
-   inventario de la app MISAGI original): operaciones, mantenimiento,
+   inventario de la app de origen): operaciones, mantenimiento,
    contabilidad, rrhh, ssoma, imagen, personas, roster, roster_conductores,
    viajes, documentos, asistencia, boletas, solicitudes, tareas, enlaces,
    prefs_enlaces, mis_enlaces, proveedores, mail.
@@ -37,7 +37,7 @@
    TRES REGLAS QUE ESTE ARCHIVO IMPONE Y NINGÚN MÓDULO PUEDE SALTARSE
    --------------------------------------------------------------------------
    1) ORDEN POR FECHA DEL HECHO, CAPTURA SOLO COMO DESEMPATE.
-      Es el punto 2 del changelog. En MISAGI el listado de reportes de flota
+      Es el punto 2 del changelog. En el sistema de origen el listado de reportes de flota
       ordenaba solo por fecha de subida, así que un reporte atrasado subido
       hoy tapaba al más reciente y el jefe de flota leía como "último estado"
       un estado viejo. Este archivo tenía exactamente el mismo defecto: la

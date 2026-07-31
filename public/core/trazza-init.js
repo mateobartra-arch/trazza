@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    POR QUÉ EXISTE
 
-   En MISAGI el arranque de Firebase vivía en `assets/firebase-config.js`, y
+   En el sistema de origen el arranque de Firebase vivía en `assets/firebase-config.js`, y
    ese archivo mezclaba dos cosas que no deben ir juntas: las credenciales
    concretas de una empresa (`apiKey`, `projectId`, la site key de App Check)
    y la mecánica de encenderla (`initializeApp`, `activate` de App Check,

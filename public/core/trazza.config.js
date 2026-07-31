@@ -11,14 +11,31 @@
    /clientes/<slug>/trazza.config.js, reemplaza cada placeholder marcado
    "REEMPLAZAR" y referencia ese archivo (en vez de este) desde el <head>
    de cada página del tenant, ANTES de trazza-auth.js y trazza-db.js.
+
+   QUÉ ES TRAZZA, PARA QUE ESTE ARCHIVO SE LEA BIEN
+   -----------------------------------------------
+   Trazza es un ERP de operación de flota, no una herramienta de viajes con
+   accesorios. El catálogo de abajo es el mapa completo del producto: nueve
+   grupos, y dentro de cada grupo las ventanas. Un tramo liquidado es UN
+   módulo dentro de ese mapa —el más visible, no el único—. Por eso el orden
+   de la aplicación es INGRESO -> PORTAL -> MÓDULO, y por eso ningún portal
+   escribe módulos a mano: los lee de aquí.
+
+   Y por eso existe el grupo MAESTROS. Un ERP se sostiene o se cae en si los
+   maestros son fuente única: Personas con clave DNI, Unidades con clave
+   placa, Rutas con su tarifa fechada. Sin eso, cada módulo inventa su propia
+   verdad y a fin de mes ningún número cuadra con ningún otro.
    ========================================================================== */
 window.TRAZZA_CONFIG = {
 
   // ---- Identidad de marca (reemplaza los textos hardcodeados del motor) ----
+  // Nada de esto puede escribirse en el motor ni en las pantallas. La pantalla
+  // de ingreso y el portal leen de aquí; si este bloque está en blanco, el
+  // producto se ve como producto y no como el sistema de una sola empresa.
   marca: {
     nombre: "Trazza",            // nombre corto mostrado en cabeceras y <title>
-    razonSocial: "MISAGI S.A.C.",// razón social completa para reportes/PDFs
-    ruc: "REEMPLAZAR",           // RUC de MISAGI — pégalo aquí antes de emitir cualquier PDF
+    razonSocial: "REEMPLAZAR",   // razón social completa del cliente, para reportes/PDFs
+    ruc: "REEMPLAZAR",           // RUC del cliente — pégalo aquí antes de emitir cualquier PDF
     color: "#12161C",            // --basalt, el primario de la identidad Trazza
     logoUrl: "/core/logo.svg"    // reemplazar cuando exista el archivo de logo
   },
@@ -26,6 +43,11 @@ window.TRAZZA_CONFIG = {
   // ---- Credenciales del proyecto Firebase del tenant (SDK compat 10.12.2) ----
   // La apiKey web NO es secreta (es pública por diseño); la seguridad real
   // la dan las Firestore Security Rules (ver firestore.rules) y App Check.
+  //
+  // Los identificadores de abajo son INFRAESTRUCTURA, no marca: un projectId
+  // de Firebase no se puede renombrar, y rehacerlo significaría rehacer Auth
+  // y Firestore desde cero. Se quedan como están; no son la razón social de
+  // nadie y no se muestran en ninguna pantalla.
   firebase: {
     apiKey: "AIzaSyC_2pICWV_VWyAsfvvYxNuHxlbfi_Hlfbo",
     authDomain: "trazza-misagi.firebaseapp.com",
@@ -40,7 +62,7 @@ window.TRAZZA_CONFIG = {
 
   // ---- Identificador único del tenant: SE GRABA en cada documento Firestore ----
   // (campo empresaId) y se usa en TODAS las queries para aislar los datos.
-  empresaId: "misagi",
+  empresaId: "demo",
 
   // ---- Cuenta principal del tenant ----------------------------------------
   // El correo del primer administrador: la cuenta que se crea antes que
@@ -53,28 +75,31 @@ window.TRAZZA_CONFIG = {
 
   // ---- Catálogo de áreas del tenant (antes hardcodeado en auth.js:16-26) ----
   // Cada clave es el permiso que se guarda en usuarios/{uid}.areas[].
+  // `orden` fija la secuencia en el riel y en la rejilla del portal: primero
+  // lo que una persona usa todos los días, al final lo que se consulta.
   areas: {
-    operaciones:  { label: "Operaciones",          padre: "Flota" },   // gestión de viajes y programación
-    mantenimiento:{ label: "Mantenimiento",        padre: "Flota" },   // taller, llantas, checklist
-    rrhh:         { label: "Recursos Humanos",     padre: null },      // legajos, roster, asistencia
-    imagen:       { label: "Imagen Institucional", padre: null },      // comunicación interna/externa
-    contabilidad: { label: "Contabilidad",         padre: null },      // boletas, documentos contables
-    ssoma:        { label: "Seguridad y Salud (SSOMA)", padre: null }, // incidentes, inspecciones
-    comercial:    { label: "Comercial",            padre: null },      // clientes y ventas
-    presupuesto:  { label: "Planeamiento y Presupuesto", padre: null },// presupuestos y planeamiento
-    planificacion:{ label: "Planificación",        padre: null }       // planificación operativa
+    miespacio:    { label: "Mi espacio",          padre: null, orden: 1 },  // lo propio de cada persona
+    operaciones:  { label: "Operaciones",         padre: "Flota", orden: 2 },
+    mantenimiento:{ label: "Mantenimiento",       padre: "Flota", orden: 3 },
+    maestros:     { label: "Maestros",            padre: null, orden: 4 },  // fuente única de verdad
+    rrhh:         { label: "Recursos Humanos",    padre: null, orden: 5 },
+    contabilidad: { label: "Contabilidad",        padre: null, orden: 6 },
+    ssoma:        { label: "Seguridad y Salud (SSOMA)", padre: null, orden: 7 },
+    planificacion:{ label: "Planificación",       padre: null, orden: 8 },
+    comercial:    { label: "Comercial",           padre: null, orden: 9 },
+    presupuesto:  { label: "Planeamiento y Presupuesto", padre: null, orden: 10 },
+    administracion:{ label: "Administración",     padre: null, orden: 11 }  // gobierno del sistema
   },
 
   // ---- Rubros: capa de navegación (punto 4 del changelog) ------------------
-  // Agrupa módulos hermanos SIN fusionar su código. En MISAGI, Combustible,
-  // GNL y Lavado pasaron a navegarse como uno solo con una fila de rubro
-  // encima; cada uno siguió siendo su propia página. El usuario percibe un
-  // módulo con pestañas, el código sigue separado y desplegable por partes.
+  // Agrupa módulos hermanos SIN fusionar su código. Combustible, GNL y Lavado
+  // se navegan como uno solo con una fila de rubro encima; cada uno sigue
+  // siendo su propia página. El usuario percibe un módulo con pestañas, el
+  // código sigue separado y desplegable por partes. El portal pinta UNA
+  // tarjeta por rubro, con los miembros como chips.
   // El orden de este array es el orden en pantalla.
   rubros: [
-    { id: "gastos",    label: "Reporte de gastos", icono: "⛽" },
-    { id: "taller",    label: "Taller",            icono: "🔧" },
-    { id: "personas",  label: "Personas",          icono: "👷" }
+    { id: "gastos", label: "Reporte de gastos", icono: "⛽", desc: "Combustible, GNL y lavado. Solo lectura: se carga por «Registrar gasto»." }
   ],
 
   // ---- Catálogo de módulos (punto 3 del changelog) -------------------------
@@ -85,6 +110,10 @@ window.TRAZZA_CONFIG = {
   //   url        ruta relativa de la app
   //   estado     "activo" | "proximamente" | "oculto"
   //   soloAdmin  true = ni siquiera aparece para quien no es admin
+  //   todos      true = basta con haber iniciado sesión; NO exige el permiso
+  //              del área. Es la diferencia entre requireLogin y requireAccess:
+  //              un conductor tiene que poder ver SU boleta sin tener permiso
+  //              sobre todo Recursos Humanos.
   //   rubro      id de `rubros` si pertenece a un grupo de pestañas
   //   desc       una línea; se pinta bajo el título en el portal
   //
@@ -94,42 +123,90 @@ window.TRAZZA_CONFIG = {
   // prometer una fecha. Un módulo no contratado no se muestra NI AL ADMIN:
   // no es un permiso, es un límite de contrato.
   modulos: [
-    { id: "programacion",  label: "Programación",        area: "operaciones",   url: "operaciones/programacion/",  estado: "activo",       desc: "Qué unidad sale, con quién y hacia dónde." },
-    { id: "viajes",        label: "Viajes",              area: "operaciones",   url: "operaciones/viajes/",        estado: "activo",       desc: "Un tramo = un viaje. Aquí se liquida." },
-    { id: "rutas",         label: "Rutas y tarifas",     area: "operaciones",   url: "operaciones/rutas/",         estado: "activo",       desc: "Maestro de rutas; la tarifa se fotografía a la fecha del viaje." },
-    { id: "combustible",   label: "Combustible",         area: "operaciones",   url: "gastos/combustible/",        estado: "activo",       rubro: "gastos", desc: "Diésel: galones, precio y rendimiento." },
-    { id: "gnl",           label: "GNL",                 area: "operaciones",   url: "gastos/gnl/",                estado: "activo",       rubro: "gastos", desc: "Gas natural licuado, solo para unidades habilitadas." },
-    { id: "lavado",        label: "Lavado",              area: "operaciones",   url: "gastos/lavado/",             estado: "activo",       rubro: "gastos", desc: "Lavados por unidad y tipo." },
-    { id: "estatus",       label: "Estatus de flota",    area: "mantenimiento", url: "mantenimiento/estatus/",     estado: "activo",       rubro: "taller", desc: "Fallas reportadas y unidades fuera de servicio." },
-    { id: "ordenes",       label: "Órdenes de trabajo",  area: "mantenimiento", url: "mantenimiento/ot/",          estado: "activo",       rubro: "taller", desc: "OT correlativa por año, apertura y cierre." },
-    { id: "neumaticos",    label: "Neumáticos",          area: "mantenimiento", url: "mantenimiento/neumaticos/",  estado: "activo",       rubro: "taller", desc: "Matriz por posición; manda la lectura mínima." },
-    { id: "preventivo",    label: "Plan preventivo",     area: "mantenimiento", url: "mantenimiento/preventivo/",  estado: "activo",       rubro: "taller", desc: "MP programado vs ejecutado." },
-    { id: "personal",      label: "Personal",            area: "rrhh",          url: "rrhh/personal/",             estado: "activo",       rubro: "personas", desc: "Maestro de personas. Clave: DNI." },
-    { id: "roster",        label: "Roster de conductores", area: "rrhh",        url: "rrhh/roster/",               estado: "activo",       rubro: "personas", desc: "Grilla mensual; el grupo se deriva de los códigos." },
-    { id: "asistencia",    label: "Asistencia",          area: "rrhh",          url: "rrhh/asistencia/",           estado: "activo",       rubro: "personas", desc: "Marcas diarias por persona." },
-    { id: "boletas",       label: "Boletas",             area: "rrhh",          url: "rrhh/boletas/",              estado: "activo",       soloAdmin: true, desc: "Boletas de pago por periodo." },
-    { id: "epp",           label: "EPP · Kardex",        area: "ssoma",         url: "ssoma/epp/",                 estado: "activo",       desc: "Entregas y stock; el histórico no mueve saldo." },
-    { id: "documentos",    label: "Documentos",          area: "contabilidad",  url: "contabilidad/documentos/",   estado: "activo",       desc: "Guías, facturas y vencimientos." },
-    { id: "utilidad",      label: "Rentabilidad",        area: "contabilidad",  url: "gerencia/utilidad/",         estado: "activo",       soloAdmin: true, desc: "Utilidad por unidad y por periodo, con la política a la vista." },
-    { id: "consistencia",  label: "Consistencia de datos", area: "operaciones", url: "gerencia/consistencia/",     estado: "activo",       soloAdmin: true, desc: "Qué registros están fuera de los totales y por qué." },
-    { id: "comercial",     label: "Comercial",           area: "comercial",     url: "comercial/",                 estado: "proximamente", desc: "Clientes, cotizaciones y contratos." },
-    { id: "presupuesto",   label: "Presupuesto",         area: "presupuesto",   url: "presupuesto/",               estado: "proximamente", desc: "Metas por periodo contra ejecución real." },
-    { id: "imagen",        label: "Imagen institucional", area: "imagen",       url: "imagen/",                    estado: "oculto",       desc: "Comunicación interna. Apagado por defecto." }
+
+    /* ---------- MI ESPACIO — todo el que entra, sin permisos de área ------- */
+    { id: "misdatos",   label: "Mis datos",    area: "miespacio", url: "miespacio/datos/",      estado: "activo", todos: true, desc: "Tu información y solicitar cambios." },
+    { id: "mistareas",  label: "Mis tareas",   area: "miespacio", url: "miespacio/tareas/",     estado: "activo", todos: true, desc: "Tareas que te asignaron." },
+    { id: "misboletas", label: "Mis boletas",  area: "miespacio", url: "miespacio/boletas/",    estado: "activo", todos: true, desc: "Tus boletas de pago." },
+    { id: "micts",      label: "Mi CTS",       area: "miespacio", url: "miespacio/cts/",        estado: "activo", todos: true, desc: "Tus depósitos de CTS." },
+    { id: "miroster",   label: "Mi roster",    area: "miespacio", url: "miespacio/roster/",     estado: "activo", todos: true, desc: "Tus días trabajados." },
+    { id: "misvacaciones", label: "Vacaciones", area: "miespacio", url: "miespacio/vacaciones/", estado: "activo", todos: true, desc: "Saldo y solicitar vacaciones." },
+
+    /* ---------- FLOTA · OPERACIONES --------------------------------------- */
+    { id: "programacion", label: "Programación diaria", area: "operaciones", url: "operaciones/programacion/", estado: "activo", desc: "Qué unidad sale, con quién y hacia dónde." },
+    { id: "viajes",       label: "Viajes y liquidación", area: "operaciones", url: "operaciones/viajes/",     estado: "activo", desc: "Un tramo = un viaje. Aquí se liquida." },
+    { id: "seguimiento",  label: "Seguimiento de unidades", area: "operaciones", url: "operaciones/seguimiento/", estado: "activo", desc: "Calendario por unidad: vueltas, taller y disponibilidad." },
+    { id: "roster",       label: "Roster",             area: "operaciones", url: "operaciones/roster/",       estado: "activo", desc: "Grilla mensual; el grupo se deriva de los códigos." },
+    { id: "gasto",        label: "Registrar gasto",    area: "operaciones", url: "operaciones/gasto/",        estado: "activo", desc: "La única puerta de gastos. Enruta por placa, con foto y guardarraíles." },
+    { id: "combustible",  label: "Combustible",        area: "operaciones", url: "gastos/combustible/",       estado: "activo", rubro: "gastos", desc: "Diésel: galones, precio y rendimiento." },
+    { id: "gnl",          label: "GNL",                area: "operaciones", url: "gastos/gnl/",               estado: "activo", rubro: "gastos", desc: "Gas natural licuado, solo para unidades habilitadas." },
+    { id: "lavado",       label: "Lavado",             area: "operaciones", url: "gastos/lavado/",            estado: "activo", rubro: "gastos", desc: "Lavados por unidad y tipo." },
+    { id: "documentos",   label: "Gestión documentaria", area: "operaciones", url: "operaciones/documentos/", estado: "activo", desc: "Documentos y vencimientos de unidades y conductores." },
+
+    /* ---------- FLOTA · MANTENIMIENTO ------------------------------------- */
+    { id: "estatus",     label: "Estatus de flota",   area: "mantenimiento", url: "mantenimiento/estatus/",     estado: "activo", desc: "Estado, llantas y mantenimiento de toda la flota." },
+    { id: "ordenes",     label: "Órdenes de trabajo", area: "mantenimiento", url: "mantenimiento/ot/",          estado: "activo", desc: "OT correlativa por año, apertura y cierre." },
+    { id: "neumaticos",  label: "Neumáticos",         area: "mantenimiento", url: "mantenimiento/neumaticos/",  estado: "activo", desc: "Matriz por posición; manda la lectura mínima." },
+    { id: "preventivo",  label: "Plan preventivo",    area: "mantenimiento", url: "mantenimiento/preventivo/",  estado: "activo", desc: "MP programado contra ejecutado." },
+    { id: "entregables", label: "Entregables de mantenimiento", area: "mantenimiento", url: "mantenimiento/entregables/", estado: "activo", desc: "Los formatos que exige el cliente, con vista previa antes de descargar." },
+
+    /* ---------- MAESTROS — fuente única de verdad ------------------------- */
+    { id: "unidades", label: "Unidades",         area: "maestros", url: "maestros/unidades/", estado: "activo", desc: "Tractos, tolvas y carretas. Clave: la placa." },
+    { id: "personal", label: "Personas",         area: "maestros", url: "maestros/personas/", estado: "activo", desc: "Directorio único: conductores y administrativos. Clave: el DNI." },
+    { id: "rutas",    label: "Rutas y tarifas",  area: "maestros", url: "maestros/rutas/",    estado: "activo", desc: "Tarifa por TNE y moneda; se fotografía a la fecha del viaje." },
+    { id: "talleres", label: "Talleres",         area: "maestros", url: "maestros/talleres/", estado: "activo", desc: "Alimenta el desplegable «Taller» del reporte de fallas." },
+
+    /* ---------- RECURSOS HUMANOS ----------------------------------------- */
+    { id: "asistencia", label: "Asistencia",       area: "rrhh", url: "rrhh/asistencia/", estado: "activo", desc: "Marcaje de entrada y salida." },
+    { id: "legajos",    label: "Personal (legajos)", area: "rrhh", url: "rrhh/personal/",  estado: "activo", desc: "Legajo completo: contratos, EMO, licencias." },
+    { id: "boletas",    label: "Boletas y planilla", area: "rrhh", url: "rrhh/boletas/",   estado: "activo", soloAdmin: true, desc: "Genera las boletas de pago del periodo." },
+    { id: "cts",        label: "CTS",              area: "rrhh", url: "rrhh/cts/",        estado: "activo", soloAdmin: true, desc: "Liquidación de CTS del personal." },
+
+    /* ---------- CONTABILIDAD --------------------------------------------- */
+    { id: "viaticos",     label: "Viáticos por viaje", area: "contabilidad", url: "contabilidad/viaticos/", estado: "activo", desc: "Los viáticos de cada tramo, tal como vienen de la hoja." },
+    { id: "guias",        label: "Resumen de guías",   area: "contabilidad", url: "contabilidad/guias/",    estado: "activo", desc: "La guía es el DNI del tramo cargado." },
+    { id: "cobrar",       label: "Cuentas por cobrar", area: "contabilidad", url: "contabilidad/cobrar/",   estado: "activo", desc: "Facturas por cliente: por cobrar, factoring, pagadas y detracción." },
+    { id: "contabilidad", label: "Contabilidad",       area: "contabilidad", url: "contabilidad/",          estado: "proximamente", desc: "Libros, comprobantes y reportes." },
+
+    /* ---------- SSOMA ----------------------------------------------------- */
+    { id: "epp",        label: "EPP · Kardex y entregas", area: "ssoma", url: "ssoma/epp/",    estado: "activo", desc: "Stock de EPP, compras y entrega a cada trabajador." },
+    { id: "gastosSsoma", label: "Gastos SSOMA",           area: "ssoma", url: "ssoma/gastos/", estado: "activo", desc: "Gastos de seguridad y salud." },
+    { id: "ssoma",      label: "SSOMA",                   area: "ssoma", url: "ssoma/",        estado: "proximamente", desc: "Incidentes, inspecciones y capacitaciones." },
+
+    /* ---------- PLANIFICACIÓN -------------------------------------------- */
+    { id: "plan", label: "Plan mensual", area: "planificacion", url: "planificacion/plan/", estado: "activo", desc: "Plan de trabajo del mes contra lo que realmente pasó." },
+
+    /* ---------- COMERCIAL / PRESUPUESTO ---------------------------------- */
+    { id: "comercial",   label: "Comercial",   area: "comercial",   url: "comercial/",   estado: "proximamente", desc: "Clientes, cotizaciones y contratos." },
+    { id: "presupuesto", label: "Presupuesto", area: "presupuesto", url: "presupuesto/", estado: "proximamente", desc: "Metas por periodo contra ejecución real." },
+
+    /* ---------- ADMINISTRACIÓN — el gobierno del sistema ------------------ */
+    { id: "tablero",      label: "Tablero gerencial",    area: "administracion", url: "gerencia/tablero/",      estado: "activo", soloAdmin: true, desc: "Indicadores de flota, costos, mantenimiento y metas." },
+    { id: "utilidad",     label: "Rentabilidad",         area: "administracion", url: "gerencia/utilidad/",     estado: "activo", soloAdmin: true, desc: "Ingresos, gastos y utilidad por unidad, con la política a la vista." },
+    { id: "accesos",      label: "Accesos del personal", area: "administracion", url: "gerencia/accesos/",      estado: "activo", soloAdmin: true, desc: "Crear y gestionar los ingresos del equipo." },
+    { id: "enlaces",      label: "Accesos directos",     area: "administracion", url: "gerencia/enlaces/",      estado: "activo", desc: "Enlaces a carpetas y documentos, y quién los ve." },
+    { id: "alertas",      label: "Alertas y vencimientos", area: "administracion", url: "gerencia/alertas/",    estado: "activo", desc: "Documentos, EMO, mantenimiento y correctivos por vencer." },
+    { id: "solicitudes",  label: "Solicitudes",          area: "administracion", url: "gerencia/solicitudes/",  estado: "activo", desc: "Aprobar vacaciones y cambios del personal." },
+    { id: "tareas",       label: "Tareas (delegar)",     area: "administracion", url: "gerencia/tareas/",       estado: "activo", desc: "Delegar y dar seguimiento a las tareas del equipo." },
+    { id: "consistencia", label: "Consistencia de datos", area: "administracion", url: "gerencia/consistencia/", estado: "activo", soloAdmin: true, desc: "Qué registros están fuera de los totales y por qué." },
+    { id: "respaldo",     label: "Respaldo de la base",  area: "administracion", url: "gerencia/respaldo/",     estado: "activo", soloAdmin: true, desc: "Descargar toda la información del sistema." }
   ],
 
   // ---- Diccionario de códigos del roster (punto 1 del changelog) ----------
   // clase: "trabajo" | "descanso" | "ausencia" | "transito"
   // Es lo que alimenta la barra de estado tipo Excel (TRAZZA.catalogo.resumen)
   // y la leyenda de colores. Cambiarlo por cliente es cambiar este objeto,
-  // no tocar la grilla.
+  // no tocar la grilla. Los códigos de trabajo son los DESTINOS del cliente:
+  // aquí van genéricos a propósito, porque nombrar operaciones reales en el
+  // motor es exactamente lo que este archivo existe para evitar.
   rosterCodigos: {
-    H1: { label: "Hudbay turno 1",   clase: "trabajo",   bg: "#12897A", fg: "#FFFFFF" },
-    H2: { label: "Hudbay turno 2",   clase: "trabajo",   bg: "#16B39C", fg: "#12161C" },
-    T:  { label: "Tintaya",          clase: "trabajo",   bg: "#C0703A", fg: "#FFFFFF" },
-    C:  { label: "Constancia",       clase: "trabajo",   bg: "#B8820F", fg: "#12161C" },
-    A:  { label: "Antapaccay",       clase: "trabajo",   bg: "#A93529", fg: "#FFFFFF" },
-    R1: { label: "Raciemsa turno 1", clase: "trabajo",   bg: "#3E4956", fg: "#EBEFF3" },
-    R2: { label: "Raciemsa turno 2", clase: "trabajo",   bg: "#2B3441", fg: "#EBEFF3" },
+    O1: { label: "Operación 1",      clase: "trabajo",   bg: "#12897A", fg: "#FFFFFF" },
+    O2: { label: "Operación 2",      clase: "trabajo",   bg: "#16B39C", fg: "#12161C" },
+    O3: { label: "Operación 3",      clase: "trabajo",   bg: "#C0703A", fg: "#FFFFFF" },
+    O4: { label: "Operación 4",      clase: "trabajo",   bg: "#B8820F", fg: "#12161C" },
+    O5: { label: "Operación 5",      clase: "trabajo",   bg: "#A93529", fg: "#FFFFFF" },
+    S1: { label: "Servicio 1",       clase: "trabajo",   bg: "#3E4956", fg: "#EBEFF3" },
+    S2: { label: "Servicio 2",       clase: "trabajo",   bg: "#2B3441", fg: "#EBEFF3" },
     CV: { label: "Carro vacío",      clase: "trabajo",   bg: "#8B95A1", fg: "#12161C" },
     ET: { label: "En tránsito",      clase: "transito",  bg: "#59636F", fg: "#EBEFF3" },
     D:  { label: "Descanso",         clase: "descanso",  bg: "#EBEFF3", fg: "#59636F" },
@@ -144,8 +221,8 @@ window.TRAZZA_CONFIG = {
   // otra operación, cambia de grupo solo. Cero configuración manual.
   // Empate: gana el grupo declarado primero (determinista a propósito).
   rosterGrupos: [
-    { id: "minas",    label: "HUDBAY / OTRAS MINAS", patron: "^[HTCA]" },
-    { id: "raciemsa", label: "RACIEMSA",             patron: "^R" }
+    { id: "operaciones", label: "OPERACIONES", patron: "^O" },
+    { id: "servicios",   label: "SERVICIOS",   patron: "^S" }
   ],
 
   // ---- Mantenimiento: umbrales y avisos -----------------------------------
@@ -157,9 +234,10 @@ window.TRAZZA_CONFIG = {
   //
   // El PLAN PREVENTIVO no está aquí a propósito: vive en la colección
   // `config` (plan_preventivo) porque cambia por periodo y lo edita el
-  // taller, no el desarrollador. En MISAGI estaba hardcodeado para siete
-  // placas y además se leía de una colección que no existe — ese es el
-  // origen de las dos hojas de Excel en blanco. Ver trazza-mantenimiento.js.
+  // taller, no el desarrollador. En el sistema de origen estaba escrito a
+  // fuego para un puñado de placas y además se leía de una colección que no
+  // existía — ese es el origen de las dos hojas de Excel en blanco. Ver
+  // trazza-mantenimiento.js.
   mantenimiento: {
     neumatico: { baja: 6, reencauche: 9 },   // mm: <6 BAJA · 6–9 REENCAUCHE · ≥9 OPERATIVO
     avisoDias: 15,                            // "por vencer" desde 15 días antes

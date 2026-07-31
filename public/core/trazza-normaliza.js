@@ -2,9 +2,9 @@
    TRAZZA — Normalización (una sola función por tipo de clave)
    --------------------------------------------------------------------------
    POR QUÉ EXISTE
-   El changelog de MISAGI cierra con esta línea: "Normalización de placas a
+   El changelog del sistema de origen cierra con esta línea: "Normalización de placas a
    AAA-000 antes de comparar/cruzar (una sola función NP())". No es un
-   detalle cosmético. En MISAGI la misma unidad aparecía escrita como
+   detalle cosmético. En el sistema de origen la misma unidad aparecía escrita como
    "ABC-123", "ABC123", "abc 123" y " ABC-123 " según quién la tecleó y en
    qué pantalla. Cada variante es una placa distinta para Firestore, así que
    los gastos de un camión se repartían entre cuatro "camiones" y el módulo
