@@ -139,7 +139,8 @@ Write-Host ""
 Write-Host "  DESPUES, EL PRIMER ADMINISTRADOR:" -ForegroundColor Cyan
 Write-Host "    Descarga la clave de servicio (Configuracion del proyecto -> Cuentas de servicio"
 Write-Host "    -> Generar nueva clave privada), guardala como clave-servicio.json en esta carpeta y corre:"
-Write-Host "      node herramientas/crear-admin.js --correo tu@correo.com --clave 'UnaClaveLarga' --nombre 'Mateo Bartra' --empresa $Empresa"
+Write-Host "      node herramientas/crear-admin.js --clave 'UnaClaveLarga' --nombre 'Mateo Bartra'"
+Write-Host "    El correo y la empresa salen de public/core/trazza.config.js (correoAdmin, empresaId)." -ForegroundColor DarkGray
 Write-Host ""
 Write-Host "  Ese archivo NO se sube a ningun lado. Ya esta en .gitignore." -ForegroundColor DarkGray
 Write-Host ""

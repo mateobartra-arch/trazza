@@ -28,13 +28,18 @@
    está en .gitignore. Cuando termines, bórralo.
 
    USO
-     node herramientas/crear-admin.js \
-       --correo mateo@ejemplo.com \
-       --clave 'una-clave-larga-de-verdad' \
-       --nombre 'Mateo Bartra' \
-       --empresa misagi \
-       [--areas admin,operaciones,contabilidad] \
-       [--servicio clave-servicio.json]
+     node herramientas/crear-admin.js --clave 'una-clave-larga-de-verdad'
+
+   El correo y la empresa NO hace falta escribirlos: se leen de
+   public/core/trazza.config.js (campos `correoAdmin` y `empresaId`), que es
+   la fuente única del tenant. Solo la clave se pasa a mano, porque una clave
+   no se versiona nunca.
+
+     [--correo otro@correo.com]   para crear un admin distinto del principal
+     [--nombre 'Mateo Bartra']
+     [--empresa misagi]
+     [--areas admin,operaciones,contabilidad]
+     [--servicio clave-servicio.json]
    ========================================================================== */
 "use strict";
 
@@ -44,16 +49,29 @@ var path = require("path");
 function arg(n, d) { var i = process.argv.indexOf("--" + n); return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : d; }
 function morir(m) { console.error("\n  ✕ " + m + "\n"); process.exit(1); }
 
-var correo  = arg("correo");
+// La config del tenant es la fuente única: el correo del administrador
+// principal y el empresaId ya están escritos ahí, así que no se vuelven a
+// teclear aquí. Se lee como texto (no se ejecuta) porque el archivo está
+// escrito para el navegador y define window.TRAZZA_CONFIG.
+function deConfig(campo) {
+  var ruta = path.join(__dirname, "..", "public", "core", "trazza.config.js");
+  if (!fs.existsSync(ruta)) return "";
+  var m = new RegExp("^\\s*" + campo + ":\\s*\"([^\"]*)\"", "m")
+    .exec(fs.readFileSync(ruta, "utf8"));
+  return m ? m[1] : "";
+}
+
+var correo  = arg("correo", deConfig("correoAdmin"));
 var clave   = arg("clave");
 var nombre  = arg("nombre", "Administrador");
-var empresa = arg("empresa");
+var empresa = arg("empresa", deConfig("empresaId"));
 var areas   = arg("areas", "admin").split(",").map(function (s) { return s.trim(); }).filter(Boolean);
 var rutaSvc = arg("servicio", "clave-servicio.json");
 
-if (!correo)  morir("Falta --correo");
+if (!correo)  morir("Falta --correo (y trazza.config.js no trae correoAdmin)");
 if (!clave)   morir("Falta --clave");
 if (!empresa) morir("Falta --empresa (el mismo empresaId que quedó en trazza.config.js)");
+if (correo.indexOf("@") < 0) morir("--correo no parece un correo: " + correo);
 
 // La contraseña inicial en MISAGI era el DNI del trabajador. Un DNI no es un
 // secreto: está impreso en el fotocheck que la persona lleva colgado. Este

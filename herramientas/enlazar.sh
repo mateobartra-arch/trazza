@@ -118,8 +118,10 @@ cat <<FIN
     Configuración del proyecto → Cuentas de servicio → Generar nueva clave privada.
     Guárdala como clave-servicio.json en esta carpeta y corre:
 
-      node herramientas/crear-admin.js --correo tu@correo.com --clave 'UnaClaveLarga' \\
-           --nombre 'Mateo Bartra' --empresa $EMPRESA
+      node herramientas/crear-admin.js --clave 'UnaClaveLarga' --nombre 'Mateo Bartra'
+
+    El correo y la empresa salen de public/core/trazza.config.js (correoAdmin
+    y empresaId). Solo la clave se teclea.
 
     Ese archivo NO se sube a ningún lado. Ya está en .gitignore.
 
