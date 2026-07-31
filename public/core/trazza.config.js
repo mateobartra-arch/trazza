@@ -42,6 +42,15 @@ window.TRAZZA_CONFIG = {
   // (campo empresaId) y se usa en TODAS las queries para aislar los datos.
   empresaId: "misagi",
 
+  // ---- Cuenta principal del tenant ----------------------------------------
+  // El correo del primer administrador: la cuenta que se crea antes que
+  // ninguna otra y desde la que se dan de alta las demás. No otorga ningún
+  // permiso por sí solo —los permisos viven en usuarios/{uid}.areas[] y los
+  // aplica firestore.rules—; es el valor por defecto que toma
+  // herramientas/crear-admin.js para no depender de que alguien lo teclee
+  // bien. Un correo mal escrito aquí crea un admin al que nadie puede entrar.
+  correoAdmin: "mateobartra@gmail.com",
+
   // ---- Catálogo de áreas del tenant (antes hardcodeado en auth.js:16-26) ----
   // Cada clave es el permiso que se guarda en usuarios/{uid}.areas[].
   areas: {

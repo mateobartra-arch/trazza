@@ -45,6 +45,10 @@
     var malos = [];
     if (!c) return ["trazza.config.js no está cargado"];
     if (!c.empresaId || c.empresaId === "REEMPLAZAR") malos.push("empresaId");
+    // correoAdmin no es un permiso, pero sí es la cuenta con la que alguien
+    // entra por primera vez. Si está mal escrito, el admin se crea y nadie
+    // puede usarlo, y eso se descubre tarde.
+    if (!c.correoAdmin || c.correoAdmin === "REEMPLAZAR" || c.correoAdmin.indexOf("@") < 0) malos.push("correoAdmin");
     var f = c.firebase || {};
     CLAVES.forEach(function (k) {
       if (!f[k] || f[k] === "REEMPLAZAR") malos.push("firebase." + k);
