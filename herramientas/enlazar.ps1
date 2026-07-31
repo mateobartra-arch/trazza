@@ -22,7 +22,7 @@
 
  CÓMO SE USA (PowerShell, dentro de la carpeta trazza)
 
-   .\herramientas\enlazar.ps1 -Proyecto trazza-misagi -Empresa misagi -Razon "MISAGI S.A.C." -Ruc 20123456789
+   .\herramientas\enlazar.ps1 -Proyecto trazza-misagi -Empresa acme -Razon "ACME TRANSPORTES S.A.C." -Ruc 20123456789
 
  Si el proyecto ya existe, agrega  -Existente  y no intentará crearlo.
 ==============================================================================

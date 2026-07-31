@@ -4,7 +4,7 @@
    --------------------------------------------------------------------------
    REGLA QUE ESTE ARCHIVO EXISTE PARA CUMPLIR
 
-   Nunca se demuestra sobre datos reales de un cliente. Ni los de MISAGI, ni
+   Nunca se demuestra sobre datos reales de un cliente. Ni los del piloto, ni
    los del siguiente. No es una formalidad legal: es que una demo se enseña
    en una sala con gente de otras empresas, se graba, se comparte por correo
    y termina en un chat. Los sueldos, los DNI y las tarifas negociadas de una
@@ -272,7 +272,7 @@ function sembrar() {
   // La política de costos se siembra DECLARADA, no por defecto, para que la
   // demo no muestre el sello "POLÍTICA POR DEFECTO (nadie la declaró)".
   // El valor de correctivoResta es una decisión de negocio, no técnica:
-  // aquí queda en false, que es como MISAGI lo venía calculando.
+  // aquí queda en false, que es como el sistema de origen lo venía calculando.
   L.set(db.collection("config").doc(EMPRESA + "__politica_costos"), doc({
     clave: "politica_costos", tipo: "escalar", area: "contabilidad",
     valor: {

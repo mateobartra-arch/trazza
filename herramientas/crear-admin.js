@@ -37,7 +37,7 @@
 
      [--correo otro@correo.com]   para crear un admin distinto del principal
      [--nombre 'Mateo Bartra']
-     [--empresa misagi]
+     [--empresa acme]
      [--areas admin,operaciones,contabilidad]
      [--servicio clave-servicio.json]
    ========================================================================== */

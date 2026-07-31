@@ -19,9 +19,9 @@
    USO
      node herramientas/escribir-config.js \
         --sdk sdkconfig.json \
-        --empresa misagi \
+        --empresa acme \
         --nombre "Trazza" \
-        --razon "MISAGI S.A.C." \
+        --razon "ACME TRANSPORTES S.A.C." \
         --ruc 20xxxxxxxxx \
         [--destino public/core/trazza.config.js]
 

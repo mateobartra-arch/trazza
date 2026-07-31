@@ -4,8 +4,8 @@
 # -----------------------------------------------------------------------------
 #  Es el mismo procedimiento que enlazar.ps1, para macOS, Linux o Git Bash.
 #
-#    bash herramientas/enlazar.sh --proyecto trazza-misagi --empresa misagi \
-#         --razon "MISAGI S.A.C." --ruc 20123456789
+#    bash herramientas/enlazar.sh --proyecto trazza-misagi --empresa acme \
+#         --razon "ACME TRANSPORTES S.A.C." --ruc 20123456789
 #
 #  Agrega --existente si el proyecto Firebase ya está creado.
 #  Agrega --sin-publicar para configurar sin desplegar todavía.
