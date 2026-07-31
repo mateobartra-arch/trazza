@@ -1,0 +1,19 @@
+{
+  "name": "trazza",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Trazza — SaaS de operación de flota de transporte de carga. Núcleo compartido multi-empresa sobre Firebase.",
+  "scripts": {
+    "pruebas": "node pruebas/pruebas-nucleo.js",
+    "enlazar": "bash herramientas/enlazar.sh",
+    "admin": "node herramientas/crear-admin.js",
+    "demo": "node herramientas/sembrar-demo.js",
+    "local": "firebase emulators:start",
+    "reglas": "firebase deploy --only firestore:rules,firestore:indexes,storage",
+    "publicar": "firebase deploy --only hosting,firestore:rules,firestore:indexes,storage"
+  },
+  "devDependencies": {
+    "firebase-admin": "^12.7.0",
+    "firebase-tools": "^13.29.1"
+  }
+}

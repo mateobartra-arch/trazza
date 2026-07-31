@@ -1,0 +1,52 @@
+rules_version = '2';
+// ============================================================================
+// TRAZZA — Reglas de Cloud Storage
+// ----------------------------------------------------------------------------
+// Storage guarda lo que Firestore no debe guardar: la foto de la guía de
+// remisión, el PDF del SOAT, la foto del neumático, el escaneo de la boleta.
+//
+// La regla dura es la misma que en Firestore: la ruta del archivo empieza por
+// el empresaId, y nadie puede leer ni escribir fuera de su propia empresa.
+// La comprobación se hace contra el documento usuarios/{uid} de Firestore, no
+// contra un custom claim, porque el perfil ya vive ahí y un claim exigiría
+// mantener dos fuentes de verdad del mismo dato.
+//
+// Convención de rutas (obligatoria; si un archivo se sube fuera de ella, esta
+// regla lo rechaza y eso es deliberado):
+//     /{empresaId}/{modulo}/{año}/{nombre}
+// ejemplo: /andina/guias/2026/V3M-812_2026-07-30.jpg
+// ============================================================================
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function perfil() {
+      return firestore.get(/databases/(default)/documents/usuarios/$(request.auth.uid)).data;
+    }
+    function sesion()  { return request.auth != null; }
+    function activo()  { return sesion() && perfil().activo != false; }
+    function miEmpresa() { return perfil().empresaId; }
+    function esAdmin() { return activo() && ('admin' in perfil().areas); }
+
+    // Límite de tamaño: 15 MB. Una foto de guía tomada con celular pesa 2–4 MB.
+    // El límite no es una molestia burocrática: sin él, una sola persona
+    // subiendo videos convierte la factura de Storage en una sorpresa.
+    function pesoRazonable() {
+      return request.resource.size < 15 * 1024 * 1024;
+    }
+    function tipoPermitido() {
+      return request.resource.contentType.matches('image/.*')
+          || request.resource.contentType == 'application/pdf';
+    }
+
+    match /{empresaId}/{allPaths=**} {
+      allow read:   if activo() && empresaId == miEmpresa();
+      allow write:  if activo() && empresaId == miEmpresa() && pesoRazonable() && tipoPermitido();
+      allow delete: if esAdmin() && empresaId == miEmpresa();
+    }
+
+    // Todo lo que no caiga en la convención de rutas queda cerrado.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

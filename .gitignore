@@ -1,0 +1,27 @@
+# Credenciales de servicio. NUNCA se versionan ni se comparten por WhatsApp.
+# Un archivo de estos da acceso TOTAL al proyecto saltándose todas las reglas.
+clave-servicio.json
+*serviceAccount*.json
+*-firebase-adminsdk-*.json
+
+# Config real de un tenant. La plantilla (public/core/trazza.config.js) sí se
+# versiona; las copias por cliente con credenciales reales no.
+clientes/*/trazza.config.js
+
+node_modules/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.DS_Store
+Thumbs.db
+
+# Hallazgos de seguridad del sistema en producción. Describen dónde encontrar
+# datos de gente real en un sistema encendido: eso no se publica en ningún
+# repositorio, ni público ni privado con colaboradores.
+docs/PRIVADO-*.md
+
+# Export del sistema original (PII real y claves de producción). Nunca entra.
+misagi_src/
+**/seed-personal.js
+**/seed-roster.js

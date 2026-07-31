@@ -1,0 +1,1217 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "operaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mantenimiento",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "contabilidad",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "rrhh",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "ssoma",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "imagen",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "personas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster_conductores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "viajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "documentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "asistencia",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "boletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitudes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "tareas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "enlaces",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "prefs_enlaces",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mis_enlaces",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "proveedores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mail",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "operaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "operaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "operaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mantenimiento",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mantenimiento",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mantenimiento",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "contabilidad",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "contabilidad",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "contabilidad",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "rrhh",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "rrhh",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "rrhh",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "ssoma",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "ssoma",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "ssoma",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "viajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "viajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "viajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "documentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "documentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "documentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "asistencia",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "asistencia",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "asistencia",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster_conductores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster_conductores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster_conductores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "personas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "personas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "personas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "boletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "boletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "_ts",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "boletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "modulo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "historico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "operaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "placa",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mantenimiento",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "placa",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "viajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "placa",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "roster",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dni",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "asistencia",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dni",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "boletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "empresaId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dni",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

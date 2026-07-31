@@ -1,0 +1,263 @@
+rules_version = '2';
+// ============================================================================
+// TRAZZA — Reglas de seguridad Firestore, multi-tenant
+// ----------------------------------------------------------------------------
+// ADVERTENCIA / CONTEXTO: el único firestore.rules que existía en el
+// repositorio original (flota/mantenimiento/estatus/reglas/firestore.rules)
+// estaba HUÉRFANO: protegía colecciones top-level (/unidades, /fallas,
+// /checklist_diario, /inspecciones_neumaticas, /prev_registros) que la app
+// ya no usa así, y dejaba SIN NINGUNA REGLA las ~20 colecciones reales que
+// sí se usan hoy (operaciones, mantenimiento, contabilidad, rrhh, ssoma,
+// imagen, personas, roster, roster_conductores, usuarios, viajes,
+// documentos, asistencia, boletas, solicitudes, tareas, enlaces,
+// prefs_enlaces, mis_enlaces, proveedores, mail). En la práctica, sin un
+// archivo con match para esas colecciones, Firestore aplica el modo de
+// prueba/por defecto del proyecto (que suele ser "allow read, write: if
+// true" o quedar bloqueado por completo según cómo se creó la base) — en
+// ningún caso hay control de acceso real por empresa ni por área. Este
+// archivo reemplaza a aquel y cubre las colecciones reales.
+// ============================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Helpers de identidad y permisos --------------------------------
+    // perfil(): trae el documento de usuario de quien hace la petición.
+    // Es un get() extra por regla evaluada, pero Firestore lo cachea dentro
+    // de la misma transacción/lectura, así que el costo es aceptable.
+    function perfil() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data;
+    }
+
+    // sesion(): exige que exista un usuario autenticado (Firebase Auth).
+    function sesion() {
+      return request.auth != null;
+    }
+
+    // miEmpresa(): empresaId del tenant al que pertenece quien hace la
+    // petición, según su propio documento de usuario. Este es el ancla de
+    // todo el aislamiento multi-tenant: cada usuario solo puede operar
+    // dentro de su propia empresa.
+    function miEmpresa() {
+      return perfil().empresaId;
+    }
+
+    // activo(): la cuenta no está deshabilitada por el administrador.
+    function activo() {
+      return perfil().activo != false;
+    }
+
+    // esAdmin(): el usuario tiene el área especial "admin" (ve y administra
+    // todo dentro de SU empresa; nunca cruza a otra empresa).
+    function esAdmin() {
+      return sesion() && activo() && ('admin' in perfil().areas);
+    }
+
+    // puedeArea(area): el usuario tiene esa área asignada, o es admin.
+    function puedeArea(area) {
+      return sesion() && activo() && (esAdmin() || (area in perfil().areas));
+    }
+
+    // deSuEmpresa(datos): el documento leído/escrito pertenece a la misma
+    // empresa que el usuario que hace la petición. Esta es la barrera dura
+    // contra fugas de datos entre tenants (el hallazgo #1 de la auditoría:
+    // antes NINGÚN documento tenía campo de tenant, así que esta barrera
+    // no podía existir).
+    function deSuEmpresa(datos) {
+      return sesion() && activo() && datos.empresaId == miEmpresa();
+    }
+
+    // ---- usuarios: perfiles y permisos ----------------------------------
+    // Cada persona solo puede leer su propio perfil, o un admin de su misma
+    // empresa puede leer/gestionar los perfiles de su empresa. Nadie puede
+    // escribir su propio documento de permisos (evita auto-escalarse a
+    // "admin"); solo un admin de la misma empresa puede modificarlo.
+    match /usuarios/{uid} {
+      allow read: if sesion() && (request.auth.uid == uid || (esAdmin() && resource.data.empresaId == miEmpresa()));
+      allow create: if esAdmin() && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if esAdmin() && resource.data.empresaId == miEmpresa() && request.resource.data.empresaId == miEmpresa();
+    }
+
+    // ---- Colecciones operativas por área, aisladas por empresaId --------
+    // Patrón común a todas: leer exige ser de la misma empresa y tener el
+    // área correspondiente (o ser admin); escribir exige además que el
+    // documento ENTRANTE declare la empresa correcta (no se puede "regalar"
+    // un registro a otra empresa ni escribir sin declarar empresaId).
+    match /operaciones/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('operaciones');
+      allow create: if puedeArea('operaciones') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('operaciones') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /mantenimiento/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('mantenimiento');
+      allow create: if puedeArea('mantenimiento') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('mantenimiento') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /contabilidad/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('contabilidad');
+      allow create: if puedeArea('contabilidad') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('contabilidad') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /rrhh/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('rrhh');
+      allow create: if puedeArea('rrhh') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('rrhh') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /ssoma/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('ssoma');
+      allow create: if puedeArea('ssoma') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('ssoma') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /imagen/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('imagen');
+      allow create: if puedeArea('imagen') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('imagen') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    // ---- Maestros y datos transversales (varias áreas los leen) ---------
+    // personas, roster y roster_conductores alimentan varios módulos (rrhh,
+    // operaciones); por eso cualquier usuario activo de la empresa puede
+    // leerlos, pero solo rrhh o admin puede escribirlos (son datos
+    // sensibles: contienen PII — ver hallazgo #5 de la auditoría).
+    match /personas/{id} {
+      allow read: if deSuEmpresa(resource.data);
+      allow create: if sesion() && activo() && puedeArea('rrhh') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('rrhh') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /roster/{id} {
+      allow read: if deSuEmpresa(resource.data);
+      allow create: if sesion() && activo() && puedeArea('rrhh') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('rrhh') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /roster_conductores/{id} {
+      allow read: if deSuEmpresa(resource.data);
+      allow create: if sesion() && activo() && puedeArea('rrhh') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('rrhh') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    // ---- viajes: usado por operaciones, pero leído también por rutas/alertas ----
+    match /viajes/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('operaciones');
+      allow create: if puedeArea('operaciones') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('operaciones') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    // ---- documentos, boletas: contabilidad/rrhh (contienen datos sensibles) ----
+    match /documentos/{id} {
+      allow read: if deSuEmpresa(resource.data) && puedeArea('contabilidad');
+      allow create: if puedeArea('contabilidad') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('contabilidad') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /boletas/{id} {
+      // Cada trabajador debe poder ver SU boleta, además de rrhh/admin.
+      allow read: if deSuEmpresa(resource.data) && (puedeArea('rrhh') || resource.data.uid == request.auth.uid);
+      allow create: if puedeArea('rrhh') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('rrhh') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    // ---- asistencia: cada trabajador marca la suya; rrhh/admin ve todo ----
+    match /asistencia/{id} {
+      allow read: if deSuEmpresa(resource.data) && (puedeArea('rrhh') || resource.data.uid == request.auth.uid);
+      allow create: if sesion() && activo() && request.resource.data.empresaId == miEmpresa() && (puedeArea('rrhh') || request.resource.data.uid == request.auth.uid);
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('rrhh');
+    }
+
+    // ---- solicitudes y tareas: autoservicio de cada trabajador ----------
+    match /solicitudes/{id} {
+      allow read: if deSuEmpresa(resource.data) && (puedeArea('rrhh') || resource.data.uid == request.auth.uid);
+      allow create: if sesion() && activo() && request.resource.data.empresaId == miEmpresa() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if deSuEmpresa(resource.data) && (puedeArea('rrhh') || resource.data.uid == request.auth.uid) && request.resource.data.empresaId == miEmpresa();
+    }
+
+    match /tareas/{id} {
+      allow read: if deSuEmpresa(resource.data);
+      allow create: if sesion() && activo() && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && (esAdmin() || resource.data.uid == request.auth.uid) && request.resource.data.empresaId == miEmpresa();
+    }
+
+    // ---- enlaces / prefs_enlaces / mis_enlaces: portal de accesos rápidos ----
+    match /enlaces/{id} {
+      allow read: if deSuEmpresa(resource.data);
+      allow create: if puedeArea('imagen') && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && puedeArea('imagen') && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    match /prefs_enlaces/{id} {
+      allow read: if deSuEmpresa(resource.data);
+      allow create: if sesion() && activo() && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && (esAdmin() || resource.data.uid == request.auth.uid) && request.resource.data.empresaId == miEmpresa();
+    }
+
+    match /mis_enlaces/{id} {
+      // Personal e individual: solo el dueño lee/escribe lo suyo.
+      allow read: if deSuEmpresa(resource.data) && resource.data.uid == request.auth.uid;
+      allow create: if sesion() && activo() && request.resource.data.empresaId == miEmpresa() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if deSuEmpresa(resource.data) && resource.data.uid == request.auth.uid && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    // ---- proveedores: comercial/contabilidad ----------------------------
+    match /proveedores/{id} {
+      allow read: if deSuEmpresa(resource.data) && (puedeArea('contabilidad') || puedeArea('comercial'));
+      allow create: if (puedeArea('contabilidad') || puedeArea('comercial')) && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && (puedeArea('contabilidad') || puedeArea('comercial')) && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    // ---- mail: cola/registro de correos salientes (backend/servicio) ----
+    // Solo admin gestiona esta colección desde el cliente; el envío real
+    // suele hacerlo una función de servidor con credenciales admin (que no
+    // está sujeta a estas reglas).
+    match /mail/{id} {
+      allow read: if deSuEmpresa(resource.data) && esAdmin();
+      allow create: if sesion() && activo() && request.resource.data.empresaId == miEmpresa();
+      allow update, delete: if deSuEmpresa(resource.data) && esAdmin() && (request.method == 'delete' || request.resource.data.empresaId == miEmpresa());
+    }
+
+    // ---- config: parámetros por periodo (TC, tarifas, montos manuales) --
+    // El id del documento es "<empresaId>__<clave>", pero las reglas NO
+    // confían en el id: comprueban el campo empresaId, igual que en todas
+    // las demás colecciones. Un id se puede escribir a mano en una consola.
+    //
+    // POR QUÉ ES UNA COLECCIÓN TOP-LEVEL Y NO UN DOC DENTRO DE contabilidad:
+    // en MISAGI el tipo de cambio vivía en contabilidad/_config_tc. Con
+    // reglas reales, eso significa que solo quien tiene el área contabilidad
+    // puede leerlo — y el módulo de viajes, que es de operaciones, necesita
+    // el TC para convertir un flete en dólares. El módulo se rompería para
+    // todo el personal de operaciones. Por eso: LECTURA para cualquier
+    // usuario activo del tenant, ESCRITURA solo para el admin o para el área
+    // dueña declarada en el propio documento (campo `area`).
+    //
+    // Los parámetros no son secretos: son las reglas del negocio. Que un
+    // programador vea el tipo de cambio de julio no es un riesgo; que no lo
+    // pueda leer sí lo es, porque entonces el número sale mal.
+    match /config/{id} {
+      allow read: if sesion() && activo() && resource.data.empresaId == miEmpresa();
+      allow create: if sesion() && activo()
+                    && request.resource.data.empresaId == miEmpresa()
+                    && (esAdmin() || puedeArea(request.resource.data.area));
+      allow update: if sesion() && activo()
+                    && resource.data.empresaId == miEmpresa()
+                    && request.resource.data.empresaId == miEmpresa()
+                    && (esAdmin() || puedeArea(resource.data.area));
+      // No se borran parámetros: borrar el doc de un parámetro borra también
+      // su histórico por periodo, y con él la posibilidad de reproducir un
+      // número que ya se le facturó a un cliente. Para dejar de usar un
+      // parámetro se declara el periodo nuevo; el pasado no se toca.
+      allow delete: if false;
+    }
+
+    // ---- Default deny: cualquier colección no listada arriba queda ------
+    // completamente bloqueada. Esto es lo que el firestore.rules original
+    // NO garantizaba para las colecciones reales de la app (ver advertencia
+    // al inicio de este archivo).
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
