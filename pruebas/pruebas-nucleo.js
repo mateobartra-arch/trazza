@@ -54,7 +54,7 @@ es("documento() normaliza in place",
 
 /* ------------------------------------------------------------- 2. ORDEN */
 grupo("2 · Orden por fecha del hecho (punto 2 del changelog)");
-// El caso exacto de MISAGI: un reporte del 10 subido el 30 no puede tapar al
+// El caso exacto del sistema de origen: un reporte del 10 subido el 30 no puede tapar al
 // del 28 subido el 28.
 var filas = [
   { _id: "viejo-subido-hoy", fecha: "2026-07-10", _ts: { seconds: 3000 } },

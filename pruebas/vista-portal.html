@@ -152,6 +152,12 @@ button{font:inherit;color:inherit}
 .mod.pronto .mi{background:transparent;border:1px dashed var(--linea)}
 .mod.pronto h3,.mod.pronto p{color:var(--tinta3)}
 .mod.pronto .ir{color:var(--tinta3)}
+/* Chips de rubro: una tarjeta que representa a varios módulos hermanos.
+   Punto 4 del changelog — el usuario percibe UN módulo con pestañas; el
+   código sigue siendo una página por hermano. */
+.mod .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mod .chips span{font-family:var(--mono);font-size:10.5px;color:var(--tinta2);
+  border:1px solid var(--linea);border-radius:999px;padding:2px 8px;background:var(--niebla)}
 
 /* ---------- paleta de comandos ---------- */
 .velo{position:fixed;inset:0;background:rgba(18,22,28,.52);backdrop-filter:blur(3px);z-index:90;display:grid;place-items:start center;padding-top:11vh}
@@ -274,7 +280,7 @@ button{font:inherit;color:inherit}
   g.TRAZZA.puedeVer = function(){ return true; };
   g.TRAZZA.logout   = function(){ location.href = "vista-ingreso.html"; };
   g.TRAZZA.requireLogin = function(){
-    return P({ user:{uid:"demo", email:"mateo@misagi.com.pe"},
+    return P({ user:{uid:"demo", email:"mateo@trazza.app"},
                perfil:{nombre:"Mateo Bartra", areas:["admin"], activo:true} });
   };
     /* Los mismos 7 tramos que muestra vista-viajes.html, para que el portal y el
@@ -327,17 +333,42 @@ button{font:inherit;color:inherit}
   // un tenant no debería tener que elegir emojis para estrenar el producto,
   // y un área sin icono cae en el genérico sin romper nada.
   var ICO = {
-    operaciones:"🚚", mantenimiento:"🔧", rrhh:"👷", contabilidad:"🧾",
-    ssoma:"🦺", comercial:"🤝", presupuesto:"📊", planificacion:"🗓",
-    imagen:"◍", _:"▪"
+    miespacio:"◉", operaciones:"🚚", mantenimiento:"🔧", maestros:"🗂",
+    rrhh:"👷", contabilidad:"🧾", ssoma:"🦺", planificacion:"🗓",
+    comercial:"🤝", presupuesto:"📊", administracion:"⚙", _:"▪"
   };
   var ICOMOD = {
-    viajes:"🧭", programacion:"🗓", rutas:"🛣", combustible:"⛽", gnl:"⛽",
-    lavado:"💧", estatus:"🚨", ordenes:"📋", neumaticos:"◎", preventivo:"🔧",
-    personal:"👤", roster:"📆", asistencia:"⏱", boletas:"🧾", epp:"🦺",
-    documentos:"📎", utilidad:"📈", consistencia:"🔎", comercial:"🤝",
-    presupuesto:"📊", _:"▪"
+    /* mi espacio */
+    misdatos:"👤", mistareas:"✓", misboletas:"🧾", micts:"🏦", miroster:"📆", misvacaciones:"🌴",
+    /* operaciones */
+    programacion:"🗓", viajes:"🧭", seguimiento:"📡", roster:"📆", gasto:"➕",
+    combustible:"⛽", gnl:"⛽", lavado:"💧", documentos:"📎",
+    /* mantenimiento */
+    estatus:"🚨", ordenes:"📋", neumaticos:"◎", preventivo:"🔧", entregables:"📤",
+    /* maestros */
+    unidades:"🚛", personal:"👥", rutas:"🛣", talleres:"🏭",
+    /* rrhh */
+    asistencia:"⏱", legajos:"🗃", boletas:"🧾", cts:"🏦",
+    /* contabilidad */
+    viaticos:"💵", guias:"📄", cobrar:"💳", contabilidad:"📒",
+    /* ssoma */
+    epp:"🦺", gastosSsoma:"🧯", ssoma:"🛡",
+    /* planificación / comercial / presupuesto */
+    plan:"🗓", comercial:"🤝", presupuesto:"📊",
+    /* administración */
+    tablero:"📈", utilidad:"📈", accesos:"🔑", enlaces:"🔗", alertas:"⏳",
+    solicitudes:"📨", tareas:"✓", consistencia:"🔎", respaldo:"💾",
+    _:"▪"
   };
+  /* Iconos por rubro: la tarjeta colapsada usa el del rubro, no el del
+     primer hermano. Un rubro que se pinta con el icono de uno de sus
+     miembros hace creer que la tarjeta ES ese miembro. */
+  var ICORUBRO = { gastos:"⛽", taller:"🔧", personas:"👷", _:"▪" };
+
+  function razonSocial(){
+    var r=(CFG.marca&&CFG.marca.razonSocial)||"";
+    return (!r || r==="REEMPLAZAR") ? "" : r;
+  }
 
   function areaLabel(id){
     var a=(CFG.areas||{})[id];
@@ -385,19 +416,60 @@ button{font:inherit;color:inherit}
       if(!bolsa[k]){ bolsa[k]={id:k,label:areaLabel(k),icono:ICO[k]||ICO._,mods:[]}; orden.push(k); }
       bolsa[k].mods.push(m);
     });
-    return orden.map(function(k){ return bolsa[k]; });
+    // El orden de los grupos lo manda `orden` en la config del tenant, no el
+    // orden en que aparecieron los módulos en el array. Un área sin `orden`
+    // se va al final, en el orden en que apareció: nunca desaparece.
+    var A=CFG.areas||{};
+    orden.sort(function(a,b){
+      var oa=(A[a]&&A[a].orden)||999, ob=(A[b]&&A[b].orden)||999;
+      if(oa!==ob) return oa-ob;
+      return 0;
+    });
+    return orden.map(function(k){ return colapsarRubros(bolsa[k]); });
+  }
+
+  // Punto 4 del changelog, en la vista. Los módulos que comparten `rubro` se
+  // pintan como UNA tarjeta —la del rubro— con los hermanos como chips. No se
+  // fusiona nada: la tarjeta entra al primero, y cada hermano sigue siendo su
+  // propia página. Tres tarjetas casi idénticas (Combustible, GNL, Lavado)
+  // ocupan media rejilla y no dicen nada que "Reporte de gastos" no diga.
+  // Un rubro con un solo módulo visible NO se colapsa: sería una pestaña sola.
+  function colapsarRubros(g){
+    var defs={}, lista=(CFG.rubros||[]);
+    lista.forEach(function(r){ defs[r.id]=r; });
+    var cuenta={};
+    g.mods.forEach(function(m){ if(m.rubro) cuenta[m.rubro]=(cuenta[m.rubro]||0)+1; });
+    var out=[], hecho={};
+    g.mods.forEach(function(m){
+      if(!m.rubro || cuenta[m.rubro]<2){ out.push(m); return; }
+      if(hecho[m.rubro]) return;
+      hecho[m.rubro]=1;
+      var r=defs[m.rubro]||{}, hermanos=g.mods.filter(function(x){ return x.rubro===m.rubro; });
+      out.push({
+        id:"rubro_"+m.rubro, label:r.label||m.rubro, area:g.id,
+        url:hermanos[0].url, estado:"activo",
+        desc:r.desc||hermanos.map(function(x){return x.label;}).join(" · "),
+        _icono:ICORUBRO[m.rubro]||r.icono||ICORUBRO._,
+        _chips:hermanos.map(function(x){ return x.label; })
+      });
+    });
+    return { id:g.id, label:g.label, icono:g.icono, mods:out };
   }
 
   function tarjeta(m){
     var pronto = (m.estado==="proximamente");
-    var ico = ICOMOD[m.id]||ICOMOD._;
+    var ico = m._icono || ICOMOD[m.id] || ICOMOD._;
     var sello = m._sello ? '<span class="sello '+(m._selloClase||"")+'">'+esc(m._sello)+'</span>' : "";
+    var chips = (m._chips&&m._chips.length)
+      ? '<div class="chips">'+m._chips.map(function(c){ return '<span>'+esc(c)+'</span>'; }).join("")+'</div>'
+      : "";
     return ''+
       '<article class="mod'+(pronto?" pronto":"")+'" data-url="'+esc(pronto?"":m.url)+'">'+
         sello+
         '<div class="mi">'+ico+'</div>'+
         '<h3>'+esc(m.label)+'</h3>'+
         '<p>'+esc(m.desc||"")+'</p>'+
+        chips+
         '<div class="ir">'+(pronto?'Próximamente':'Abrir <i>›</i>')+'</div>'+
       '</article>';
   }
@@ -445,10 +517,10 @@ button{font:inherit;color:inherit}
   // con un dato menos.
   function pintarPulso(d){
     var t=[
-      {n:d.enRuta,       l:"unidades en ruta ahora",     p:"tramos abiertos sin marcar llegada", cls:d.enRuta>0?"":"bien",        url:"vista-viajes.html"},
-      {n:d.sinLiquidar,  l:"viajes por liquidar",        p:"llegaron y siguen sin cerrar",       cls:d.sinLiquidar>0?"tibio":"bien", url:"vista-viajes.html"},
-      {n:d.sinGuia,      l:"tramos cargados sin guía",   p:"no se pueden cerrar ni facturar",    cls:d.sinGuia>0?"alerta":"bien", url:"vista-viajes.html"},
-      {n:d.vencen,       l:"vencimientos en 7 días",     p:"documentos y mantenimiento",         cls:d.vencen>0?"alerta":"bien",  url:"vista-pendiente.html?m=documentos&t=Gesti%C3%B3n%20documentaria"}
+      {n:d.enRuta,       l:"unidades en ruta ahora",     p:"tramos abiertos sin marcar llegada", cls:d.enRuta>0?"":"bien",        url:"operaciones/viajes/"},
+      {n:d.sinLiquidar,  l:"viajes por liquidar",        p:"llegaron y siguen sin cerrar",       cls:d.sinLiquidar>0?"tibio":"bien", url:"operaciones/viajes/"},
+      {n:d.sinGuia,      l:"tramos cargados sin guía",   p:"no se pueden cerrar ni facturar",    cls:d.sinGuia>0?"alerta":"bien", url:"operaciones/viajes/"},
+      {n:d.vencen,       l:"vencimientos en 7 días",     p:"documentos y mantenimiento",         cls:d.vencen>0?"alerta":"bien",  url:"contabilidad/documentos/"}
     ];
     $("pulso").innerHTML=t.map(function(x){
       return '<div class="kpi '+x.cls+'" data-url="'+esc(x.url)+'">'+
@@ -519,7 +591,12 @@ button{font:inherit;color:inherit}
     PERFIL = sesion.perfil||{};
     var nom = PERFIL.nombre || sesion.user.email || "";
     $("saludo").textContent = saludoDe()+(primerNombre(nom)?(", "+primerNombre(nom)):"")+" 👋";
-    $("etiqueta").textContent = "Portal de gestión · "+((CFG.marca&&CFG.marca.razonSocial)||"");
+    // La razón social sale de la config del tenant y de ningún otro lado. Si
+    // todavía dice REEMPLAZAR —o está vacía— no se pinta un placeholder en la
+    // cara del usuario: se pinta solo "Portal de gestión". Un producto que
+    // muestra sus propios placeholders parece a medio hacer, y el que lo ve
+    // primero suele ser el que decide si se compra.
+    $("etiqueta").textContent = "Portal de gestión"+(razonSocial()?" · "+razonSocial():"");
   // La bajada se arma aquí y no en el HTML porque depende del dispositivo:
   // prometer "el riel de la izquierda" y "Ctrl K" en un teléfono, donde no
   // existe ninguno de los dos, es una instrucción que no se puede seguir.
@@ -527,7 +604,7 @@ button{font:inherit;color:inherit}
   $("bajada").innerHTML = conTeclado
     ? 'Entra a cualquier módulo desde aquí, salta de grupo con el riel de la izquierda, o búscalo por nombre con <b>Ctrl&nbsp;K</b>.'
     : 'Entra a cualquier módulo desde aquí, o toca <b>☰</b> para saltar de grupo.';
-    $("rz").textContent = (CFG.marca&&CFG.marca.razonSocial)||"Portal";
+    $("rz").textContent = razonSocial() || (CFG.marca&&CFG.marca.nombre) || "Trazza";
     $("qn").textContent = nom;
     $("qr").textContent = (TRAZZA.esAdmin&&TRAZZA.esAdmin(PERFIL)) ? "Administrador" : (PERFIL.tipo||"Usuario");
     $("av").textContent = iniciales(nom);
