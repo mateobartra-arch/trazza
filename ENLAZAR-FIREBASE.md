@@ -204,8 +204,14 @@ raíz de `trazza`. Después:
 
 ```bash
 npm install firebase-admin
-node herramientas/crear-admin.js --correo tu@correo.com --clave "UnaClaveLargaDeVerdad" --nombre "Mateo Bartra" --empresa misagi
+node herramientas/crear-admin.js --clave "UnaClaveLargaDeVerdad" --nombre "Mateo Bartra"
 ```
+
+No hace falta escribir el correo ni la empresa. El script los lee de
+`public/core/trazza.config.js`, que ya trae `correoAdmin: "mateobartra@gmail.com"`
+y `empresaId: "misagi"`. Esa es la cuenta principal del sistema: la primera que
+existe y desde la que se dan de alta todas las demás. Lo único que se teclea es
+la clave, porque una clave no se escribe en un archivo que se versiona.
 
 El script crea el usuario en Authentication, escribe su documento en `usuarios`
 con `areas: ["admin"]` y `empresaId: "misagi"`, y deja registrado en `config` el
