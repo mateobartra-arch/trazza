@@ -216,10 +216,10 @@ la clave, porque una clave no se escribe en un archivo que se versiona.
 El script crea el usuario en Authentication, escribe su documento en `usuarios`
 con `areas: ["admin"]` y `empresaId: "misagi"`, y deja registrado en `config` el
 nacimiento del inquilino. Rechaza claves de menos de doce caracteres y rechaza
-claves que sean solo números. Eso segundo no es paranoia de manual: en MISAGI la
-contraseña inicial de cada trabajador era su DNI, y un DNI no es un secreto —está
-impreso en el fotocheck que la persona lleva colgado al cuello. Este producto no
-vuelve a nacer con esa deuda, y menos en la cuenta que lo ve todo.
+claves que sean solo números. Eso segundo no es paranoia de manual: un número de
+documento no es un secreto —está impreso en el fotocheck que la persona lleva
+colgado al cuello—, así que una clave derivada de él no protege nada. Ninguna
+cuenta de este producto nace así, y menos la que lo ve todo.
 
 **Cuando termines, borra `clave-servicio.json`.** Ese archivo se salta todas las
 reglas de seguridad: quien lo tenga es dueño de la base entera, sin login y sin
@@ -235,7 +235,7 @@ genera otra en treinta segundos.
 node herramientas/sembrar-demo.js --empresa demo
 ```
 
-Nunca demuestres sobre datos reales de MISAGI. Una demo se enseña en una sala con
+Nunca demuestres sobre datos reales de un cliente. Una demo se enseña en una sala con
 gente de otras empresas, se graba, se comparte por correo y termina en un chat de
 WhatsApp que no controlas; ahí van sueldos, DNI y direcciones de gente que no dio
 permiso para eso. Por eso el `empresaId` por defecto de este script es
