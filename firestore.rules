@@ -225,7 +225,7 @@ service cloud.firestore {
     // las demás colecciones. Un id se puede escribir a mano en una consola.
     //
     // POR QUÉ ES UNA COLECCIÓN TOP-LEVEL Y NO UN DOC DENTRO DE contabilidad:
-    // en MISAGI el tipo de cambio vivía en contabilidad/_config_tc. Con
+    // en el sistema de origen el tipo de cambio vivía en contabilidad/_config_tc. Con
     // reglas reales, eso significa que solo quien tiene el área contabilidad
     // puede leerlo — y el módulo de viajes, que es de operaciones, necesita
     // el TC para convertir un flete en dólares. El módulo se rompería para

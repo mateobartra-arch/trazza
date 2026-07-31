@@ -34,7 +34,7 @@ tomado. Usa el patrón `trazza-<empresa>`, por ejemplo `trazza-misagi`. Aparece 
 la URL del sitio publicado (`trazza-misagi.web.app`).
 
 El **empresaId** es el inquilino dentro de Trazza. Es corto, en minúsculas, sin
-espacios ni tildes: `misagi`. Va escrito en cada documento de Firestore y es el
+espacios ni tildes: `acme`. Va escrito en cada documento de Firestore y es el
 campo sobre el que se apoya toda la separación entre empresas en
 `firestore.rules`. Cambiarlo después obliga a reescribir todos los documentos.
 
@@ -46,13 +46,13 @@ Abre PowerShell en la carpeta `trazza` (clic derecho dentro de la carpeta →
 *Abrir en Terminal*) y corre:
 
 ```powershell
-.\herramientas\enlazar.ps1 -Proyecto trazza-misagi -Empresa misagi -Razon "MISAGI S.A.C." -Ruc 20123456789
+.\herramientas\enlazar.ps1 -Proyecto trazza-misagi -Empresa acme -Razon "ACME TRANSPORTES S.A.C." -Ruc 20123456789
 ```
 
 En macOS, Linux o Git Bash el equivalente es:
 
 ```bash
-bash herramientas/enlazar.sh --proyecto trazza-misagi --empresa misagi --razon "MISAGI S.A.C." --ruc 20123456789
+bash herramientas/enlazar.sh --proyecto trazza-misagi --empresa acme --razon "ACME TRANSPORTES S.A.C." --ruc 20123456789
 ```
 
 El script comprueba Node, instala la CLI de Firebase si falta, abre el navegador
@@ -66,9 +66,10 @@ más veces rompe un enlace con Firebase es copiar el bloque de configuración de
 el navegador y pegarlo con una coma de menos o con comillas curvas que el
 navegador convirtió sin avisar. `escribir-config.js` toma el JSON que emite la
 CLI y reemplaza únicamente los bloques `firebase` y `marca`, más `empresaId` y
-`appCheckSiteKey`. Todo lo demás de ese archivo —las nueve áreas, los veintiún
-módulos, los rubros, los umbrales de neumáticos, los catálogos, los rangos de
-guardarraíl— es configuración de producto que costó pensarse y no se toca. Antes
+`appCheckSiteKey`. Todo lo demás de ese archivo —las once áreas, el catálogo
+completo de módulos del ERP, los rubros, los umbrales de neumáticos, los
+catálogos, los rangos de guardarraíl— es configuración de producto que costó
+pensarse y no se toca. Antes
 de escribir deja un `.bak`, y al terminar lista cualquier línea que siga diciendo
 `REEMPLAZAR`.
 
@@ -108,7 +109,7 @@ formulario; el hosting lo configura el deploy. Al terminar te muestra un bloque
 
 **Escribir la configuración.** Ábrelo en `public/core/trazza.config.js` y
 reemplaza cada `"REEMPLAZAR"` del bloque `firebase` por su valor, más
-`empresaId: "misagi"` y el bloque `marca` con el nombre comercial, la razón
+`empresaId: "acme"` y el bloque `marca` con el nombre comercial, la razón
 social y el RUC. Copia valor por valor, no el bloque entero, y revisa que no
 haya quedado ninguna comilla curva.
 
@@ -209,12 +210,12 @@ node herramientas/crear-admin.js --clave "UnaClaveLargaDeVerdad" --nombre "Mateo
 
 No hace falta escribir el correo ni la empresa. El script los lee de
 `public/core/trazza.config.js`, que ya trae `correoAdmin: "mateobartra@gmail.com"`
-y `empresaId: "misagi"`. Esa es la cuenta principal del sistema: la primera que
+y `empresaId: "acme"`. Esa es la cuenta principal del sistema: la primera que
 existe y desde la que se dan de alta todas las demás. Lo único que se teclea es
 la clave, porque una clave no se escribe en un archivo que se versiona.
 
 El script crea el usuario en Authentication, escribe su documento en `usuarios`
-con `areas: ["admin"]` y `empresaId: "misagi"`, y deja registrado en `config` el
+con `areas: ["admin"]` y `empresaId: "acme"`, y deja registrado en `config` el
 nacimiento del inquilino. Rechaza claves de menos de doce caracteres y rechaza
 claves que sean solo números. Eso segundo no es paranoia de manual: un número de
 documento no es un secreto —está impreso en el fotocheck que la persona lleva
