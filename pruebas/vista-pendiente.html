@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trazza · Módulo no portado (vista)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   MAQUETA — destino de un módulo que el catálogo ya declara y el código
+   todavía no implementa.
+   --------------------------------------------------------------------------
+   Existe para que la maqueta no mienta en ninguna de las dos direcciones.
+   Borrar el módulo del catálogo mentiría por omisión: el cliente lo contrató
+   y va a estar. Dejar la tarjeta apuntando a una ruta inexistente mentiría al
+   revés: parece roto lo que en realidad está pendiente. Esta pantalla dice
+   exactamente en qué punto está cada cosa y devuelve al portal en un clic.
+   ========================================================================== */
+:root{
+  --basalt:#12161C; --basalt2:#1B2129; --basalt3:#2B3441;
+  --niebla:#EBEFF3; --papel:#FFFFFF;
+  --cobre:#C0703A; --cardenillo:#12897A;
+  --tinta:#151A20; --tinta2:#59636F; --tinta3:#8B95A1; --linea:#D9DFE6;
+  --r:14px; --r2:8px;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --disp:"Archivo","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sombra:0 1px 2px rgba(18,22,28,.06),0 8px 24px -12px rgba(18,22,28,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--niebla);color:var(--tinta);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.caja{background:var(--papel);border:1px solid var(--linea);border-radius:var(--r);
+  box-shadow:var(--sombra);max-width:560px;width:100%;padding:34px 34px 28px}
+.glifo{width:46px;height:46px;border-radius:12px;background:var(--basalt);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--disp);
+  font-weight:700;font-size:1.25rem;margin-bottom:18px}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--tinta3);margin:0 0 8px}
+h1{font-family:var(--disp);font-size:1.5rem;line-height:1.2;margin:0 0 14px;font-weight:700}
+p{margin:0 0 14px;line-height:1.6;color:var(--tinta2);font-size:.95rem}
+.nota{background:#F6F8FA;border-left:3px solid var(--cardenillo);border-radius:var(--r2);
+  padding:12px 14px;font-size:.88rem;color:var(--tinta2);margin:0 0 20px}
+.volver{display:inline-flex;align-items:center;gap:8px;background:var(--basalt);color:#fff;
+  text-decoration:none;padding:11px 18px;border-radius:var(--r2);font-weight:600;font-size:.92rem}
+.volver:hover{background:var(--basalt2)}
+.pie{margin:18px 0 0;font-family:var(--mono);font-size:.72rem;color:var(--tinta3)}
+</style>
+</head>
+<body>
+  <main class="caja">
+    <div class="glifo">T</div>
+    <p class="eyebrow" id="eyebrow">Módulo del catálogo</p>
+    <h1 id="titulo">Este módulo todavía no está portado</h1>
+    <p id="cuerpo">La tarjeta que abriste existe en el catálogo del cliente, así que el portal
+      la muestra y la persona correcta puede verla. Lo que aún no existe es la pantalla:
+      ese módulo sigue corriendo sobre el código del sistema de origen y todavía no se
+      trasladó al núcleo de Trazza.</p>
+    <p class="nota">El primero en cruzar fue <strong>Viajes y liquidación</strong>, sin mover
+      una sola cifra del cálculo. Los demás siguen el mismo camino: primero la fuente de
+      datos, después la pantalla.</p>
+    <a class="volver" href="vista-portal.html">← Volver al portal</a>
+    <p class="pie" id="pie">maqueta · datos ficticios</p>
+  </main>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var t = q.get("t"), m = q.get("m");
+  if(t){
+    document.getElementById("titulo").textContent = t + " todavía no está portado";
+    document.title = "Trazza · " + t + " (vista)";
+  }
+  if(m) document.getElementById("pie").textContent = "maqueta · módulo «" + m + "» · datos ficticios";
+})();
+</script>
+</body>
+</html>

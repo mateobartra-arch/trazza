@@ -152,9 +152,9 @@ table.t td.r,table.t th.r{text-align:right;font-variant-numeric:tabular-nums}
 </head>
 <body>
   <header class="msg-header">
-    <a class="brand" href="../../index.html"><span class="brand-mark">T</span> Trazza · Viajes</a>
+    <a class="brand" href="vista-portal.html"><span class="brand-mark">T</span> Trazza · Viajes</a>
     <div class="spacer"></div>
-    <a class="btn btn-ghost btn-sm" href="../../index.html">← Portal</a>
+    <a class="btn btn-ghost btn-sm" href="vista-portal.html">← Portal</a>
     <button class="btn btn-ghost btn-sm" id="logoutBtn">Salir</button>
   </header>
 
@@ -618,8 +618,8 @@ table.t td.r,table.t th.r{text-align:right;font-variant-numeric:tabular-nums}
           h+='<div class="fld"><label>Tonelaje (TNE) *</label><input type="number" step="0.01" id="q_tne" value="'+esc(v.tne||"")+'"></div>';
           h+='</div>';
           h+= v.guiaId
-            ? '<div class="box" style="background:var(--verde-l)"><div style="font-size:.84rem"><strong>✓ Tomada del PDF</strong> — '+esc(v.guia)+' · '+s2(v.tne)+' TNE. <a href="../../contabilidad/guias/">Ver en Resumen de guías</a></div></div>'
-            : '<div class="box" style="background:#FBEEDE"><div style="font-size:.84rem">Lo normal: arrastra el PDF en <a href="../../contabilidad/guias/"><strong>Resumen de guías</strong></a> y el número y las toneladas caen solos. Escríbelo a mano solo si no hay PDF.</div></div>';
+            ? '<div class="box" style="background:var(--verde-l)"><div style="font-size:.84rem"><strong>✓ Tomada del PDF</strong> — '+esc(v.guia)+' · '+s2(v.tne)+' TNE. <a href="vista-pendiente.html?m=guias&t=Resumen%20de%20gu%C3%ADas">Ver en Resumen de guías</a></div></div>'
+            : '<div class="box" style="background:#FBEEDE"><div style="font-size:.84rem">Lo normal: arrastra el PDF en <a href="vista-pendiente.html?m=guias&t=Resumen%20de%20gu%C3%ADas"><strong>Resumen de guías</strong></a> y el número y las toneladas caen solos. Escríbelo a mano solo si no hay PDF.</div></div>';
           if(monedaDe(v)==="USD" && ESADMIN) h+='<div class="fld"><label>Tipo de cambio (tarifa en USD)</label><input type="number" step="0.001" id="q_tc" value="'+esc(v.tc||"")+'" placeholder="3.75"></div>';
         } else {
           h+=chip(!!v.guia, (v.guia||"")+(v.tne?(" · "+s2(v.tne)+" TNE"):""), "Pendiente — la sube Contabilidad");
