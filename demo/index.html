@@ -30,8 +30,8 @@
       Se mueve con una deriva lenta que se apaga si el sistema pide
       movimiento reducido. Sin video.
 
-  Datos de demostración: ninguna razón social, RUC ni nombre corresponde
-  a una empresa o persona real. [FICTICIO]
+  Esta pantalla no lleva datos: ni razón social, ni RUC, ni nombres. Todo
+  lo específico de la empresa vive en core/trazza.config.js.
   El cableado al núcleo está al final del <script>, bloque [CABLEADO].
   ===================================================================
 -->
@@ -103,20 +103,18 @@ body{
   text-shadow:0 2px 26px rgba(0,0,0,.72),0 1px 3px rgba(0,0,0,.6)}
 .frase h1 em{font-style:normal;color:var(--verde)}
 
-/* Firma de la pantalla: un tramo cerrado, impreso sobre la carretera.
-   No es decoración: es la regla del sistema (1 tramo = 1 viaje) y la
-   fórmula real de la liquidación (utilidad = flete − costos del tramo). */
-.liq{border-left:3px solid var(--cobre);padding:1px 0 1px 13px;margin:0 0 14px;
+/* Firma de la pantalla: lo que hay del otro lado del ingreso.
+   No es decoración. Trazza no es una pantalla de viajes: es el ERP de la
+   operación de flota, y los grupos de módulos son la promesa concreta —
+   la misma taxonomía que después ordena el portal. */
+.erp{border-left:3px solid var(--cobre);padding:1px 0 1px 13px;margin:0;
   text-shadow:0 1px 10px rgba(0,0,0,.85)}
-.liqRuta{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:#A9B4BF;
-  margin:0 0 5px}
-.liqNum{font-family:var(--mono);font-size:12.5px;color:#C7D0DA;margin:0;
-  display:flex;flex-wrap:wrap;align-items:baseline;gap:9px}
-.liqNum b{font-weight:500;color:#fff}
-.liqNum .op{color:#6C7683}
-.liqNum .ut{color:var(--verde)}
-.liqNum .ut b{color:var(--verde);font-weight:600}
-.fict{font-family:var(--mono);font-size:10.5px;color:#7D8894;margin:0;max-width:46ch;line-height:1.5}
+.erpQue{font-family:var(--mono);font-size:11px;letter-spacing:.07em;
+  text-transform:uppercase;color:#A9B4BF;margin:0 0 8px}
+.erpMod{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
+.erpMod li{font-family:var(--mono);font-size:11.5px;color:#C7D0DA;line-height:1;
+  border:1px solid rgba(255,255,255,.17);border-radius:999px;padding:5px 11px;
+  background:rgba(12,16,22,.34)}
 
 /* ---- derecha: el panel ---- */
 .der{background:var(--basalt);border-left:1px solid rgba(255,255,255,.07);
@@ -127,12 +125,6 @@ body{
 h2{font-family:var(--disp);font-weight:700;font-size:26px;line-height:1.16;
   letter-spacing:-.015em;margin:0 0 8px;color:#fff}
 .lead{margin:0 0 22px;font-size:14px;line-height:1.55;color:#9EA9B5;text-wrap:pretty}
-
-/* módulos que la persona abre al entrar. Nombra lo que va a usar, no la arquitectura. */
-.mods{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px;padding:0;list-style:none}
-.mods li{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:#9EA9B5;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
-  border-radius:99px;padding:4px 9px}
 
 /* campos */
 .campo{margin:0 0 13px}
@@ -215,10 +207,10 @@ input:focus{outline:none;border-color:var(--verde);background:rgba(255,255,255,.
   .marco{display:block;height:auto;min-height:100%}
   .izq{height:42vh;min-height:250px;padding:22px 22px 22px;position:relative;z-index:3}
   .frase h1{font-size:clamp(21px,5.6vw,27px);max-width:100%;margin:0 0 12px}
-  .liq{margin:0}
-  .liqRuta{font-size:9.8px;margin-bottom:4px}
-  .liqNum{font-size:9.7px;gap:5px}
-  .fict{display:none}
+  .erp{margin:0}
+  .erpQue{font-size:9.4px;margin-bottom:6px}
+  .erpMod{gap:5px}
+  .erpMod li{font-size:9.4px;padding:4px 8px}
   .der{border-left:0;border-top:1px solid rgba(255,255,255,.07);padding:28px 22px 44px;
     align-items:flex-start;overflow:visible}
   .caja{max-width:100%}
@@ -249,18 +241,17 @@ input:focus{outline:none;border-color:var(--verde);background:rgba(255,255,255,.
         <h1>Programas el viaje. Trazza lo <em>liquida</em>.</h1>
       </div>
 
-      <div class="liq">
-        <p class="liqRuta">ABC-123 · Arequipa → Las Bambas · cargado · 30 jul</p>
-        <p class="liqNum">
-          <span>flete <b>S/ 4 820</b></span>
-          <span class="op" aria-hidden="true">−</span>
-          <span>costos <b>S/ 2 320</b></span>
-          <span class="op" aria-hidden="true">=</span>
-          <span class="ut">utilidad <b>S/ 2 500</b></span>
-        </p>
+      <div class="erp">
+        <p class="erpQue">ERP de operación de flota</p>
+        <ul class="erpMod">
+          <li>Operaciones</li>
+          <li>Mantenimiento</li>
+          <li>Maestros</li>
+          <li>Recursos Humanos</li>
+          <li>Contabilidad</li>
+          <li>SSOMA</li>
+        </ul>
       </div>
-
-      <p class="fict">Ambiente de demostración. Ninguna razón social, RUC ni nombre corresponde a una empresa o persona real. <b>[FICTICIO]</b></p>
     </div>
   </div>
 
@@ -271,11 +262,6 @@ input:focus{outline:none;border-color:var(--verde);background:rgba(255,255,255,.
     <div class="caja" id="p1">
       <h2>Entra a tu operación</h2>
       <p class="lead">Un solo sistema y los mismos datos: lo que registras en un módulo ya está en el siguiente.</p>
-
-      <ul class="mods">
-        <li>Programación</li><li>Viajes</li><li>Combustible</li>
-        <li>Mantenimiento</li><li>Documentos</li><li>Liquidación</li>
-      </ul>
 
       <p class="err" id="err" hidden role="alert"></p>
 
@@ -381,7 +367,7 @@ input:focus{outline:none;border-color:var(--verde);background:rgba(255,255,255,.
   });
 
   /* ---- pantalla 2: reglas de la contraseña, en vivo ---- */
-  var DNI_DEMO = "10000001", PLACA_DEMO = "abc123";   /* [FICTICIO] — misma convención que herramientas/sembrar-demo.js */
+  var DNI_DEMO = "10000001", PLACA_DEMO = "abc123";   /* ejemplos de formato, no datos — misma convención que herramientas/sembrar-demo.js */
   var nueva  = document.getElementById("nueva"),
       repite = document.getElementById("repite"),
       err2   = document.getElementById("err2"),
