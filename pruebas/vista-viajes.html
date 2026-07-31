@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trazza · Viajes y liquidación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   TRAZZA — Viajes y liquidación
+   --------------------------------------------------------------------------
+   Pantalla AUTOCONTENIDA a propósito: no depende de ninguna hoja de estilo
+   compartida. El sistema de origen la ataba a un theme.css global, y esa
+   atadura es justo lo que impide desplegar una pantalla sola para un cliente
+   sin arrastrarle el resto del sitio. Los tokens de marca viven abajo, en
+   :root, y son los mismos de todo Trazza.
+
+   La segunda capa de variables (--border, --danger, --verde-d…) son ALIAS
+   sobre los tokens de marca. Existen para que el CSS portado se lea igual
+   que el original y para que cambiar la paleta de un tenant sea tocar el
+   primer bloque y nada más.
+   ========================================================================== */
+:root{
+  --basalt:#12161C; --basalt2:#1B2129; --basalt3:#2B3441; --basalt4:#3E4956;
+  --niebla:#EBEFF3; --papel:#FFFFFF;
+  --cobre:#C0703A; --cardenillo:#12897A; --ambar:#B8820F; --ocre:#A93529;
+  --tinta:#151A20; --tinta2:#59636F; --tinta3:#8B95A1; --linea:#D9DFE6;
+  --r:14px; --r2:8px;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --disp:"Archivo","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sombra:0 1px 2px rgba(18,22,28,.06),0 8px 24px -12px rgba(18,22,28,.18);
+  --sombra2:0 24px 64px -24px rgba(18,22,28,.45);
+
+  /* alias de compatibilidad */
+  --text:var(--tinta); --text-muted:var(--tinta2);
+  --border:var(--linea); --border-strong:#C6CFD9; --border-light:#EEF2F6;
+  --azul-d:var(--basalt3);
+  --danger:var(--ocre); --danger-light:#FAEDEA;
+  --amber:var(--ambar); --amber-l:#FAF1D9;
+  --verde:var(--cardenillo); --verde-d:#0D6B5F; --verde-l:#DCF0ED;
+  --shadow:var(--sombra); --shadow-sm:0 1px 2px rgba(18,22,28,.07); --shadow-lg:var(--sombra2);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--niebla);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--cobre)}
+.hidden{display:none!important}
+
+/* ── cabecera ───────────────────────────────────────────────────────────── */
+.msg-header{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;
+  padding:11px 22px;background:var(--basalt);color:var(--niebla);box-shadow:0 1px 0 rgba(255,255,255,.06)}
+.msg-header .brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;
+  font-size:.98rem;letter-spacing:-.01em;color:var(--papel);text-decoration:none}
+.brand-mark{display:grid;place-items:center;width:26px;height:26px;border-radius:7px;
+  background:var(--cobre);color:#fff;font-family:var(--disp);font-weight:800;font-size:.85rem}
+.msg-header .spacer{flex:1}
+
+/* ── botones ────────────────────────────────────────────────────────────── */
+.btn{font:inherit;font-weight:600;font-size:.88rem;padding:9px 16px;border-radius:10px;
+  border:1px solid transparent;cursor:pointer;background:transparent;color:inherit;
+  transition:background .12s ease,border-color .12s ease,transform .06s ease}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--basalt);color:#fff;border-color:var(--basalt)}
+.btn-primary:hover:not(:disabled){background:var(--basalt2)}
+.btn-ghost{background:var(--papel);color:var(--text);border-color:var(--border-strong)}
+.btn-ghost:hover:not(:disabled){background:#F4F7FA}
+.msg-header .btn-ghost{background:transparent;color:var(--niebla);border-color:rgba(235,239,243,.28)}
+.msg-header .btn-ghost:hover{background:rgba(235,239,243,.1)}
+.btn-sm{padding:6px 12px;font-size:.8rem;border-radius:8px}
+
+/* ── estructura ─────────────────────────────────────────────────────────── */
+.container{padding:0 22px}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:26px 0 6px}
+.page-head h1{font-family:var(--disp);font-size:1.72rem;font-weight:700;letter-spacing:-.025em;margin:0}
+.page-sub{font-size:.86rem;color:var(--text-muted);margin-top:3px}
+.side-note{font-size:.86rem;color:var(--text-muted);background:var(--papel);border:1px solid var(--border);
+  border-left:3px solid var(--cobre);border-radius:var(--r2);padding:11px 14px;margin:14px 0 0;max-width:78ch}
+.table-wrap{overflow-x:auto;background:var(--papel);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-sm)}
+.msg-alert{border-radius:10px;padding:10px 13px;font-size:.86rem}
+.msg-alert.error{background:var(--danger-light);color:var(--danger);border:1px solid #EBC9C2}
+
+/* ── pantalla ───────────────────────────────────────────────────────────── */
+.wrap{max-width:1180px;margin:0 auto;padding:6px 4px 40px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 20px}
+.chip{border:1px solid var(--border-strong);background:#fff;border-radius:999px;padding:7px 15px;font-size:.85rem;font-weight:600;color:var(--text-muted);cursor:pointer}
+.chip.on{background:var(--basalt);color:#fff;border-color:var(--basalt)}
+h2.sec{font-size:1.02rem;margin:26px 0 12px;color:var(--text);display:flex;align-items:center;gap:9px;font-family:var(--disp);letter-spacing:-.01em}
+h2.sec .n{background:var(--border-light);color:var(--text-muted);font-size:.78rem;padding:2px 9px;border-radius:20px;font-weight:700}
+
+/* EN TRÁNSITO: primer plano */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.vj{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow-sm)}
+.vj.transito{border-left:5px solid var(--danger);box-shadow:var(--shadow)}
+.vj.llego{border-left:5px solid var(--amber)}
+.vj.cerrado{border-left:5px solid var(--verde)}
+.vj .placa{font-family:var(--mono);font-size:1.26rem;font-weight:500;letter-spacing:.02em;color:var(--text)}
+.vj .ruta{font-size:.86rem;color:var(--text-muted);margin-top:2px}
+.vj .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.vj .meta{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 12px}
+.tag{font-size:10.5px;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:20px;text-transform:uppercase}
+.tag.carg{background:var(--verde-l);color:var(--verde-d)}
+.tag.vac{background:#EEF1F4;color:var(--text-muted)}
+.tag.dias{background:var(--danger-light);color:var(--danger)}
+.tag.dias.ok{background:var(--border-light);color:var(--text-muted)}
+.tag.op{background:#E9EEF4;color:var(--azul-d)}
+.falta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.f{font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px}
+.f.req{background:var(--danger-light);color:var(--danger)}
+.f.esp{background:var(--amber-l);color:#8A6208}
+.f.ok{background:var(--verde-l);color:var(--verde-d)}
+.vj .acc{display:flex;gap:8px;flex-wrap:wrap}
+.chipbig{display:inline-block;padding:8px 14px;border-radius:10px;font-size:.9rem;font-weight:700;margin-bottom:4px}
+.chipbig.ok{background:var(--verde-l);color:var(--verde-d)}
+.chipbig.pend{background:#FBEEDE;color:#8A4B0B}
+.sec4{margin:16px 0 8px;font-size:.92rem;display:flex;align-items:center;gap:8px;font-family:var(--disp);letter-spacing:-.01em}
+.own{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#EEF1F4;color:#6B7681;padding:2px 8px;border-radius:20px}
+.util{font-size:1.06rem;font-weight:800;font-variant-numeric:tabular-nums}
+.util.pos{color:var(--verde-d)} .util.neg{color:var(--danger)}
+.mini{font-size:.76rem;color:var(--text-muted)}
+
+table.t{width:100%;border-collapse:collapse;background:#fff}
+table.t th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);text-align:left;padding:9px 10px;border-bottom:1px solid var(--border)}
+table.t td{padding:9px 10px;border-bottom:1px solid var(--border-light);font-size:.88rem}
+table.t td.r,table.t th.r{text-align:right;font-variant-numeric:tabular-nums}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(18,22,28,.55);display:flex;align-items:flex-start;justify-content:center;padding:26px 14px;z-index:60;overflow-y:auto}
+.modal-overlay.hidden{display:none}
+.mbox{background:#fff;border-radius:18px;max-width:760px;width:100%;padding:22px 24px;box-shadow:var(--shadow-lg)}
+.mbox h3{font-family:var(--disp);letter-spacing:-.015em}
+.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.mx{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld label{display:block;font-size:.72rem;font-weight:700;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.02em}
+.fld input,.fld select,.fld textarea{width:100%;padding:9px 11px;border:1px solid var(--border-strong);border-radius:10px;font:inherit;font-size:.92rem;background:#fff;color:var(--text)}
+.fld input:focus,.fld select:focus,.vrow input:focus{outline:2px solid rgba(192,112,58,.35);outline-offset:1px;border-color:var(--cobre)}
+.fld{margin-bottom:12px}
+.vrow{display:grid;grid-template-columns:1.1fr 1.2fr 1.6fr .9fr auto;gap:7px;margin-bottom:6px;align-items:center}
+.vrow input,.vrow select{padding:7px 9px;border:1px solid var(--border-strong);border-radius:8px;font:inherit;font-size:.84rem;width:100%}
+.vx{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:0 4px}
+.box{background:var(--border-light);border-radius:12px;padding:13px 15px;margin:14px 0}
+.lin{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;gap:12px}
+.lin b{font-variant-numeric:tabular-nums}
+.lin.tot{border-top:1px solid var(--border-strong);margin-top:7px;padding-top:9px;font-size:1rem;font-weight:800}
+.auto{background:#F6ECE3;color:var(--cobre);font-size:10px;font-weight:800;padding:1px 6px;border-radius:5px;margin-left:6px;letter-spacing:.03em}
+.empty{text-align:center;color:var(--text-muted);padding:34px 10px;background:#fff;border:1px dashed var(--border-strong);border-radius:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}.vrow{grid-template-columns:1fr 1fr;gap:5px}.container{padding:0 14px}}
+</style>
+</head>
+<body>
+  <header class="msg-header">
+    <a class="brand" href="../../index.html"><span class="brand-mark">T</span> Trazza · Viajes</a>
+    <div class="spacer"></div>
+    <a class="btn btn-ghost btn-sm" href="../../index.html">← Portal</a>
+    <button class="btn btn-ghost btn-sm" id="logoutBtn">Salir</button>
+  </header>
+
+  <div class="container wrap" id="app" style="display:none">
+    <div class="page-head">
+      <div><h1>Viajes y liquidación</h1><div class="page-sub" id="sub">Cargando…</div></div>
+      <div id="acc"><button class="btn btn-primary" id="btnNuevo" style="display:none">+ Viaje extra</button></div>
+    </div>
+    <p class="side-note" id="nota"></p>
+    <div class="chips" id="filtros"></div>
+    <div id="cuerpo"></div>
+  </div>
+
+  <div id="modalN" class="modal-overlay hidden">
+    <div class="mbox" style="max-width:620px">
+      <div class="mhead"><h3 style="margin:0">Viaje extra (a mano)</h3><button class="mx" id="nx">✕</button></div>
+      <div class="mini" style="margin-bottom:14px">Para el viaje que no salió de una programación: un retorno improvisado, un apoyo, un tramo suelto.</div>
+      <div class="grid2">
+        <div class="fld"><label>Placa *</label><select id="n_placa"></select></div>
+        <div class="fld"><label>Conductor</label><select id="n_cond"></select></div>
+        <div class="fld"><label>Ruta / Operación *</label><select id="n_ruta"></select></div>
+        <div class="fld"><label>¿Sale cargado o vacío? *</label><select id="n_carga"><option value="CARGADO">CARGADO (genera guía)</option><option value="VACIO">VACÍO (sin guía, solo gastos)</option></select></div>
+        <div class="fld"><label>Origen *</label><input id="n_ori" style="text-transform:uppercase"></div>
+        <div class="fld"><label>Destino *</label><input id="n_des" style="text-transform:uppercase"></div>
+        <div class="fld"><label>Fecha de salida *</label><input type="date" id="n_ini"></div>
+        <div class="fld"><label>Fecha de llegada (si ya llegó)</label><input type="date" id="n_fin"></div>
+      </div>
+      <div id="nerr" class="msg-alert error hidden"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
+        <button class="btn btn-ghost" id="nCancel">Cancelar</button>
+        <button class="btn btn-primary" id="nSave">Crear viaje</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal" class="modal-overlay hidden">
+    <div class="mbox">
+      <div class="mhead"><h3 id="mtit" style="margin:0">Liquidar viaje</h3><button class="mx" id="mx">✕</button></div>
+      <div class="mini" id="msub" style="margin-bottom:14px"></div>
+      <div id="mbody"></div>
+      <div id="merr" class="msg-alert error hidden" style="margin-top:10px"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-ghost" id="mCancel">Cancelar</button>
+        <button class="btn btn-primary" id="mSave">Guardar liquidación</button>
+        <button class="btn btn-primary" id="mCerrar" style="background:var(--verde-d);border-color:var(--verde-d)">Guardar y CERRAR viaje</button>
+      </div>
+    </div>
+  </div>
+  <!-- Orden de carga del núcleo (ver trazza-init.js): config → init → normaliza
+       → params → db → utilidad → auth. Alterarlo produce la peor falla que
+       existe: una pantalla que arranca y muere según el orden de los <script>. -->
+
+<script>
+/* HARNESS DE VERIFICACIÓN VISUAL — datos FICTICIOS, no toca Firebase.
+   Reemplaza el núcleo por stubs con la misma firma. Solo para screenshots. */
+(function(g){
+  function P(v){ return Promise.resolve(v); }
+  var VJ = [
+    {_id:"v1", modulo:"viajes", placa:"V2K-885", conductor:"Ramiro Quispe Ccama", origen:"Matarani", destino:"Cerro Verde", ruta:"Matarani – Cerro Verde", carga:"CARGADO", estado:"EN_TRANSITO", fechaInicio:"2026-07-28", fechaFin:"", tne:31.4, guia:"", viaticos:[{fecha:"2026-07-28",lugar:"Repartición",concepto:"Almuerzo",monto:35}], moneda:"PEN"},
+    {_id:"v2", modulo:"viajes", placa:"W7J-712", conductor:"Elmer Ccahuana Puma", origen:"Cerro Verde", destino:"Matarani", ruta:"Cerro Verde – Matarani", carga:"VACIO", estado:"EN_TRANSITO", fechaInicio:"2026-07-29", fechaFin:"", viaticos:[]},
+    {_id:"v3", modulo:"viajes", placa:"X3M-401", conductor:"Julio Mamani Apaza", origen:"Matarani", destino:"Las Bambas", ruta:"Matarani – Las Bambas", carga:"CARGADO", estado:"LLEGO", fechaInicio:"2026-07-22", fechaFin:"2026-07-25", tne:29.8, guia:"", viaticos:[], estiba:180, toldeo:90, moneda:"PEN"},
+    {_id:"v4", modulo:"viajes", placa:"Y8P-233", conductor:"Néstor Huanca Flores", origen:"Las Bambas", destino:"Matarani", ruta:"Las Bambas – Matarani", carga:"CARGADO", estado:"LLEGO", fechaInicio:"2026-07-20", fechaFin:"2026-07-24", tne:30.2, guia:"T003-0009812", viaticos:[{fecha:"2026-07-21",lugar:"Yauri",concepto:"Hospedaje",monto:70},{fecha:"2026-07-22",lugar:"Yauri",concepto:"Cena",monto:28}], moneda:"PEN"},
+    {_id:"v5", modulo:"viajes", placa:"V2K-885", conductor:"Ramiro Quispe Ccama", origen:"Matarani", destino:"Cerro Verde", ruta:"Matarani – Cerro Verde", carga:"CARGADO", estado:"CERRADO", fechaInicio:"2026-07-10", fechaFin:"2026-07-13", tne:32.0, guia:"T003-0009744", tarifaUsada:41.5, viaticos:[{fecha:"2026-07-11",lugar:"Repartición",concepto:"Almuerzo",monto:32}], moneda:"PEN"},
+    {_id:"v6", modulo:"viajes", placa:"W7J-712", conductor:"Elmer Ccahuana Puma", origen:"Cerro Verde", destino:"Matarani", ruta:"Cerro Verde – Matarani", carga:"VACIO", estado:"CERRADO", fechaInicio:"2026-07-14", fechaFin:"2026-07-15", viaticos:[{fecha:"2026-07-14",lugar:"Uchumayo",concepto:"Almuerzo",monto:25}]},
+    {_id:"v7", modulo:"viajes", placa:"X3M-401", conductor:"Julio Mamani Apaza", origen:"Matarani", destino:"Las Bambas", ruta:"Matarani – Las Bambas", carga:"CARGADO", estado:"CERRADO", fechaInicio:"2026-07-02", fechaFin:"2026-07-06", tne:28.6, guia:"T003-0009701", tarifaUsada:96.0, viaticos:[{fecha:"2026-07-03",lugar:"Yauri",concepto:"Hospedaje",monto:70}], estiba:180, moneda:"PEN"}
+  ];
+  var RUTAS = [
+    {_id:"r1", nombre:"Matarani – Cerro Verde", tarifa:43.0, tarifa_desde:"2026-06-01", vigencias:[{desde:"2026-01-01",tarifa:41.5}], conceptos:{estiba:true,toldeo:true}, moneda:"PEN"},
+    {_id:"r2", nombre:"Cerro Verde – Matarani", tarifa:0, conceptos:{}, moneda:"PEN"},
+    {_id:"r3", nombre:"Matarani – Las Bambas", tarifa:98.0, tarifa_desde:"2026-06-01", vigencias:[{desde:"2026-01-01",tarifa:96.0}], conceptos:{estiba:true,toldeo:true,descarga:true}, moneda:"PEN"},
+    {_id:"r4", nombre:"Las Bambas – Matarani", tarifa:52.0, tarifa_desde:"2026-05-01", vigencias:[], conceptos:{estiba:true}, moneda:"PEN"}
+  ];
+  var UNID = [
+    {_id:"u1", placa:"V2K-885", tipo:"Tracto", estado:"Operativo"},
+    {_id:"u2", placa:"W7J-712", tipo:"Tracto", estado:"Operativo"},
+    {_id:"u3", placa:"X3M-401", tipo:"Tracto", estado:"Operativo"},
+    {_id:"u4", placa:"Y8P-233", tipo:"Tracto", estado:"Operativo"}
+  ];
+  var PERS = [
+    {_id:"p1", nombre:"Ramiro Quispe Ccama", tipo:"conductor"},
+    {_id:"p2", nombre:"Elmer Ccahuana Puma", tipo:"conductor"},
+    {_id:"p3", nombre:"Julio Mamani Apaza", tipo:"conductor"},
+    {_id:"p4", nombre:"Néstor Huanca Flores", tipo:"conductor"}
+  ];
+  var COMB = [
+    {placa:"v2k885", fecha:"2026-07-28", costoTotal:1890.40},
+    {placa:"V2K-885", fecha:"2026-07-11", costoTotal:1740.00},
+    {placa:"X3M-401", fecha:"2026-07-03", costoTotal:3120.75},
+    {placa:"Y8P-233", fecha:"2026-07-21", costoTotal:2410.00}
+  ];
+  var GNL = [{placa:"W7J-712", fecha:"2026-07-14", costoTotal:980.00}];
+  var LAV = [{placa:"V2K-885", fecha:"2026-07-12", costo:120}, {placa:"Y8P-233", fecha:"2026-07-23", costo:135}];
+  var FALLAS = [{placa:"X3M-401", fecha:"2026-07-04", costoTotal:640.00}];
+
+  g.TRAZZA = {
+    ROOT:"../../",
+    esAdmin:function(){ return true; },
+    puedeVer:function(){ return true; },
+    logout:function(){},
+    requireLogin:function(){ return P({user:{uid:"demo"}, perfil:{nombre:"Mateo Bartra", areas:["admin"], activo:true}}); },
+    norm:{ NP:function(p){ return String(p||"").toUpperCase().replace(/[^A-Z0-9]/g,""); } },
+    params:{ vigenteEn:function(l,f,c){ var a=l.slice().sort(function(x,y){return String(x[c]||"").localeCompare(String(y[c]||""));}); var g=null; a.forEach(function(x){ if(String(x[c]||"")<=f) g=x; }); return g||a[0]; } },
+    db:{
+      listar:function(o){
+        if(o.coleccion==="viajes") return P(VJ.slice());
+        if(o.coleccion==="personas") return P(PERS.slice());
+        if(o.coleccion==="mantenimiento") return P(FALLAS.slice());
+        if(o.coleccion==="operaciones"){
+          if(o.modulo==="rutas") return P(RUTAS.slice());
+          if(o.modulo==="unidades") return P(UNID.slice());
+          if(o.modulo==="combustible") return P(COMB.slice());
+          if(o.modulo==="gnl") return P(GNL.slice());
+          if(o.modulo==="lavado") return P(LAV.slice());
+        }
+        return P([]);
+      },
+      guardar:function(){ return P(); },
+      borrar:function(){ return P(); }
+    }
+  };
+})(window);
+</script>
+  <script>
+  /* ==========================================================================
+     Port de la pantalla de viajes del sistema de origen al núcleo TRAZZA.
+
+     QUÉ CAMBIÓ Y QUÉ NO
+
+     No cambió NADA de lo que el usuario ve ni de cómo se calcula el dinero.
+     La fórmula del tramo es la misma línea por línea, incluida la decisión de
+     que el mantenimiento no se carga al viaje. Cambiar la cifra y la pantalla
+     a la vez es cómo se pierde la confianza de un cliente que ya conocía sus
+     números: si el total de julio no coincide con el que imprimió el mes
+     pasado, la culpa siempre se la lleva el sistema nuevo.
+
+     Cambió DE DÓNDE salen los datos:
+       · firebase.firestore().collection(...)  →  TRAZZA.db.listar/guardar/borrar
+         (inyectan empresaId en cada lectura y escritura; ninguna pantalla
+         puede olvidarse de aislar el tenant).
+       · la tarifa vigente, que se calculaba aquí dentro  →  TRAZZA.params.vigenteEn
+         (misma regla: gana la más reciente con desde ≤ fecha, y si el viaje
+         es anterior a todo el historial corresponde la más antigua conocida,
+         nunca la de hoy).
+       · el maestro de rutas/unidades/conductores  →  TRAZZA.db sobre las
+         colecciones maestras, con caché local en la página.
+       · MISAGI.requireLogin/esAdmin/puedeVer  →  TRAZZA.*
+       · las placas se comparan normalizadas (TRAZZA.norm.NP), no en crudo:
+         "V2K-885" y "v2k885" son el mismo camión y antes no lo eran.
+     ========================================================================== */
+  (function(){
+    var PERFIL=null, UID=null, OPS=false, CTB=false, ESADMIN=false, VER_MONTOS=false;
+    var VIAJES=[], RUTAS={}, ID_UNIDAD={}, PLACAS=[], CONDS=[], GASTOS={combustible:[],gnl:[],lavado:[],mantenimiento:[]};
+    var FILTRO="pend", ACT=null;
+
+    function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+    function n(v){ var x=parseFloat(v); return isNaN(x)?0:x; }
+    function s2(v){ return (Math.round(n(v)*100)/100).toFixed(2); }
+    function hoy(){ return new Date().toLocaleDateString("en-CA",{timeZone:"America/Lima"}); }
+    function dias(a,b){ if(!a) return 0; var x=new Date(a+"T00:00:00"), y=new Date((b||hoy())+"T00:00:00");
+      return Math.max(0, Math.round((y-x)/86400000)); }
+
+    // Placa canónica. Antes se comparaba con toUpperCase() sobre el texto
+    // crudo, así que un gasto tecleado "v2k885" no se enganchaba nunca al
+    // viaje de "V2K-885" y aparecía como tramo sin abastecimiento.
+    function NP(p){ var N=window.TRAZZA&&TRAZZA.norm; return N?(N.NP(p)||""):String(p||"").toUpperCase(); }
+
+    /* ── Maestros: mismas tres fuentes, ahora a través de TRAZZA.db ────────
+       Se cachean en la página porque una pantalla de viajes consulta el
+       maestro de rutas una vez y lo usa cientos de veces por render. */
+    var MAESTROS = (function(){
+      var cache={};
+      function rutas(){
+        if(cache.rutas) return Promise.resolve(cache.rutas);
+        return TRAZZA.db.listar({coleccion:"operaciones", modulo:"rutas"})
+          .then(function(a){ cache.rutas=a.sort(function(x,y){ return String(x.nombre||"").localeCompare(String(y.nombre||"")); }); return cache.rutas; })
+          .catch(function(){ return []; });
+      }
+      function unidades(){
+        if(cache.unidades) return Promise.resolve(cache.unidades);
+        // incluirBajas: el mapa placa→id se usa para apagar la bandera
+        // "en ruta" de la unidad, y una unidad dada de baja mientras estaba
+        // en ruta también tiene que poder apagarse.
+        return TRAZZA.db.listar({coleccion:"operaciones", modulo:"unidades", incluirBajas:true})
+          .then(function(a){ cache.unidades=a.sort(function(x,y){ return String(x.placa||"").localeCompare(String(y.placa||"")); }); return cache.unidades; })
+          .catch(function(){ return []; });
+      }
+      function conductores(){
+        if(cache.conds) return Promise.resolve(cache.conds);
+        return TRAZZA.db.listar({coleccion:"personas"})
+          .then(function(a){
+            cache.conds=a.filter(function(p){ return String(p.tipo||"conductor").toLowerCase()==="conductor" && p.externo!==true; })
+                         .map(function(p){ return p.nombre; }).filter(Boolean)
+                         .sort(function(x,y){ return String(x).localeCompare(String(y)); });
+            return cache.conds;
+          })
+          .catch(function(){ return []; });
+      }
+      return {rutas:rutas, unidades:unidades, conductores:conductores};
+    })();
+
+    /* ── Tarifa vigente a la fecha del viaje ───────────────────────────────
+       La regla ya no vive en esta pantalla: vive en TRAZZA.params.vigenteEn,
+       que es una función pura y por eso se puede probar sin levantar Firebase.
+       Aquí solo se arma la lista de candidatas: la tarifa base del maestro
+       (con su tarifa_desde) más el historial de vigencias. */
+    function tarifaEn(ruta, fecha){
+      var r=RUTAS[ruta]; if(!r) return 0;
+      var cands=[];
+      if(n(r.tarifa)) cands.push({desde:r.tarifa_desde||"", tarifa:n(r.tarifa)});
+      (r.vigencias||[]).forEach(function(v){ if(n(v.tarifa)) cands.push({desde:v.desde||"", tarifa:n(v.tarifa)}); });
+      if(!cands.length) return 0;
+      var g = TRAZZA.params.vigenteEn(cands, fecha||hoy(), "desde");
+      return g ? n(g.tarifa) : 0;
+    }
+    // Prefiere lo fotografiado en el viaje; si es un viaje viejo, cae al maestro.
+    function conceptosDe(v){
+      if(v && typeof v==="object"){ if(v.conceptos) return v.conceptos; return (RUTAS[v.ruta]||{}).conceptos||{}; }
+      return (RUTAS[v]||{}).conceptos||{};
+    }
+    function monedaDe(v){ return (v&&v.moneda) || (RUTAS[v&&v.ruta]||{}).moneda || "PEN"; }
+
+    // ── Enganche automático: gastos de ESA placa dentro del rango del viaje ──
+    function dueno(placa, f){
+      var p=NP(placa);
+      var c=VIAJES.filter(function(x){
+        if(NP(x.placa)!==p) return false;
+        var ini=x.fechaInicio||"", fin=x.fechaFin||hoy();
+        return ini && f>=ini && f<=fin;
+      });
+      if(!c.length) return null;
+      c.sort(function(a,b){ return String(b.fechaInicio||"").localeCompare(String(a.fechaInicio||"")); });
+      return c[0]._id;
+    }
+    function autoDe(v){
+      var ini=v.fechaInicio||"", fin=v.fechaFin||hoy(), p=NP(v.placa);
+      function suma(arr){ var t=0, k=0;
+        arr.forEach(function(g){ if(NP(g.placa)!==p) return;
+          var f=String(g.fecha||""); if(!f||f<ini||f>fin) return;
+          // El gasto es de UN solo tramo: evita contarlo dos veces en el dia del corte.
+          if(v._id && dueno(v.placa,f)!==v._id) return;
+          t+=(n(g.costoTotal)||n(g.costo)); k++; });
+        return {total:t, n:k};
+      }
+      var comb=suma(GASTOS.combustible), gnl=suma(GASTOS.gnl), lav=suma(GASTOS.lavado), man=suma(GASTOS.mantenimiento);
+      return { combustible:comb.total+gnl.total, nComb:comb.n+gnl.n, lavado:lav.total, nLav:lav.n, mant:man.total, nMant:man.n };
+    }
+
+    function viaticosTotal(v){ var t=0; (v.viaticos||[]).forEach(function(x){ t+=n(x.monto); }); return t; }
+
+    function calc(v){
+      var a=autoDe(v), c=conceptosDe(v);
+      var vt=viaticosTotal(v);
+      var extras = (c.estiba?n(v.estiba):0) + (c.toldeo?n(v.toldeo):0) + (c.descarga?n(v.descarga):0);
+      var gastos = vt + extras + a.combustible + a.lavado;   // el mantenimiento NO se carga al tramo
+      // Ingreso: solo si va CARGADO (tramo vacío no tiene guía ni factura)
+      var flete=0;
+      if(v.carga==="CARGADO"){
+        var tar = n(v.tarifaUsada) || tarifaEn(v.ruta, v.fechaInicio);
+        flete = tar * n(v.tne);
+        if(monedaDe(v)==="USD") flete = flete * (n(v.tc)||0);
+      }
+      return {flete:flete, gastos:gastos, viaticos:vt, extras:extras, auto:a, utilidad:flete-gastos};
+    }
+
+    // ── Pendientes del viaje: obligatorio / esperado / automático ──
+    function pendientes(v){
+      var a=autoDe(v), out=[];
+      if(v.carga==="CARGADO"){ out.push({t:v.guia?"ok":"req", txt:v.guia?("Guía "+v.guia):"Falta GUÍA (la sube Contabilidad)"}); }
+      else out.push({t:"ok", txt:"Vacío · sin guía"});
+      var $=function(x){return VER_MONTOS?x:"";};
+      out.push({t:viaticosTotal(v)>0?"ok":"req", txt:viaticosTotal(v)>0?("Viáticos"+$(" S/ "+s2(viaticosTotal(v)))):"Faltan VIÁTICOS"});
+      out.push({t:a.nComb?"ok":"esp", txt:a.nComb?("Combustible"+$(" S/ "+s2(a.combustible))):"Sin abastecimiento"});
+      out.push({t:a.nLav?"ok":"esp", txt:a.nLav?("Lavado"+$(" S/ "+s2(a.lavado))):"Sin lavado"});
+      if(a.nMant && VER_MONTOS) out.push({t:"esp", txt:"Mantto S/ "+s2(a.mant)+" (no resta)"});
+      return out;
+    }
+    function puedeCerrar(v){
+      if(!v.fechaFin) return "Marca primero que LLEGÓ.";
+      if(v.carga==="CARGADO" && !v.guia) return "Un tramo cargado necesita su guía.";
+      if(viaticosTotal(v)<=0) return "Falta cargar los viáticos.";
+      if(v.carga==="CARGADO" && !n(v.tne)) return "Falta el tonelaje (TNE) para calcular el flete.";
+      if(v.carga==="CARGADO" && monedaDe(v)==="USD" && !n(v.tc)) return "Falta el tipo de cambio.";
+      return "";
+    }
+
+    function tarjeta(v){
+      var cl = v.estado==="CERRADO"?"cerrado":(v.estado==="LLEGO"?"llego":"transito");
+      var d = dias(v.fechaInicio, v.fechaFin);
+      var c = calc(v);
+      var h = '<div class="vj '+cl+'">';
+      h += '<div class="top"><div><div class="placa">'+esc(v.placa)+'</div><div class="ruta">'+esc(v.conductor||"—")+'</div></div>';
+      if(v.estado==="CERRADO" && VER_MONTOS) h+='<div style="text-align:right"><div class="util '+(c.utilidad>=0?"pos":"neg")+'">S/ '+s2(c.utilidad)+'</div><div class="mini">utilidad</div></div>';
+      h += '</div>';
+      h += '<div class="ruta" style="margin-top:8px"><strong>'+esc(v.origen||"?")+' → '+esc(v.destino||"?")+'</strong></div>';
+      h += '<div class="meta">';
+      h += '<span class="tag '+(v.carga==="CARGADO"?"carg":"vac")+'">'+(v.carga==="CARGADO"?"Cargado":"Vacío")+'</span>';
+      h += '<span class="tag op">'+esc(v.ruta||"")+'</span>';
+      if(v.estado!=="CERRADO") h+='<span class="tag dias'+(d<=3?" ok":"")+'">'+d+' día'+(d===1?"":"s")+(v.fechaFin?"":" en ruta")+'</span>';
+      h += '</div>';
+      h += '<div class="falta">'+pendientes(v).map(function(p){return '<span class="f '+p.t+'">'+esc(p.txt)+'</span>';}).join("")+'</div>';
+      h += '<div class="acc">';
+      if(v.estado==="EN_TRANSITO" && OPS) h+='<button class="btn btn-primary btn-sm" data-llego="'+v._id+'">✓ LLEGÓ</button>';
+      if(v.estado!=="CERRADO") h+='<button class="btn btn-ghost btn-sm" data-liq="'+v._id+'">Liquidar</button>';
+      else h+='<button class="btn btn-ghost btn-sm" data-liq="'+v._id+'">Ver detalle</button>';
+      if(ESADMIN && v.estado!=="CERRADO") h+='<button class="btn btn-ghost btn-sm" data-del="'+v._id+'" style="color:var(--danger)">✕</button>';
+      h += '</div></div>';
+      return h;
+    }
+
+    function render(){
+      var t=VIAJES.filter(function(v){return v.estado==="EN_TRANSITO";});
+      var l=VIAJES.filter(function(v){return v.estado==="LLEGO";});
+      var c=VIAJES.filter(function(v){return v.estado==="CERRADO";});
+      document.getElementById("filtros").innerHTML =
+        '<span class="chip'+(FILTRO==="pend"?" on":"")+'" data-f="pend">🔴 Pendientes de cierre ('+(t.length+l.length)+')</span>'+
+        '<span class="chip'+(FILTRO==="cer"?" on":"")+'" data-f="cer">Cerrados ('+c.length+')</span>'+
+        '<span class="chip'+(FILTRO==="all"?" on":"")+'" data-f="all">Todos ('+VIAJES.length+')</span>';
+
+      var cu=document.getElementById("cuerpo"), h="";
+      if(FILTRO==="pend"){
+        h += '<h2 class="sec">🔴 En tránsito <span class="n">'+t.length+'</span></h2>';
+        h += t.length? '<div class="board">'+t.map(tarjeta).join("")+'</div>'
+                     : '<div class="empty">Ningún carro en ruta ahora mismo.</div>';
+        if(l.length){
+          h += '<h2 class="sec">🟡 Llegaron · pendientes de liquidar <span class="n">'+l.length+'</span></h2>';
+          // Qué falta llenar, contado de un vistazo (lo pidió Operaciones)
+          var fg=0, fv=0, fa=0, fl=0;
+          l.forEach(function(v){ var a=autoDe(v);
+            if(v.carga==="CARGADO" && !v.guia) fg++;
+            if(viaticosTotal(v)<=0) fv++;
+            if(!a.nComb) fa++;
+            if(!a.nLav) fl++;
+          });
+          var av=[];
+          if(fg) av.push('<span class="f req">'+fg+' sin GUÍA</span>');
+          if(fv) av.push('<span class="f req">'+fv+' sin VIÁTICOS</span>');
+          if(fa) av.push('<span class="f esp">'+fa+' sin abastecimiento</span>');
+          if(fl) av.push('<span class="f esp">'+fl+' sin lavado</span>');
+          if(av.length) h += '<div class="box" style="margin-top:-4px"><div style="font-size:.82rem;font-weight:700;margin-bottom:7px">Falta llenar</div><div class="falta" style="margin:0">'+av.join("")+'</div>'+
+            '<div class="mini" style="margin-top:6px">En rojo lo que impide cerrar el viaje. En ámbar lo que puede no aplicar.</div></div>';
+          h += '<div class="board">'+l.map(tarjeta).join("")+'</div>';
+        }
+      } else if(FILTRO==="cer"){
+        h += tablaCerrados(c);
+      } else {
+        h += '<div class="board">'+VIAJES.map(tarjeta).join("")+'</div>';
+      }
+      cu.innerHTML=h;
+    }
+
+    function tablaCerrados(c){
+      if(!c.length) return '<div class="empty">Todavía no hay viajes cerrados.</div>';
+      if(!VER_MONTOS){
+        return '<div class="table-wrap"><table class="t"><thead><tr><th>Placa</th><th>Fecha</th><th>Tramo</th><th>Carga</th><th>Guía</th></tr></thead><tbody>'+
+          c.map(function(v){ return '<tr><td><strong>'+esc(v.placa)+'</strong></td><td>'+esc(v.fechaInicio||"")+'</td><td>'+esc(v.origen||"")+' → '+esc(v.destino||"")+'</td>'+
+            '<td><span class="tag '+(v.carga==="CARGADO"?"carg":"vac")+'">'+(v.carga==="CARGADO"?"Cargado":"Vacío")+'</span></td><td>'+esc(v.guia||"—")+'</td></tr>'; }).join("")+
+          '</tbody></table></div>';
+      }
+      var tot={f:0,g:0,u:0}, vac={n:0,g:0};
+      var filas=c.map(function(v){
+        var k=calc(v); tot.f+=k.flete; tot.g+=k.gastos; tot.u+=k.utilidad;
+        if(v.carga!=="CARGADO"){ vac.n++; vac.g+=k.gastos; }
+        return '<tr><td><strong>'+esc(v.placa)+'</strong></td><td>'+esc(v.fechaInicio||"")+'</td>'+
+          '<td>'+esc(v.origen||"")+' → '+esc(v.destino||"")+'</td>'+
+          '<td><span class="tag '+(v.carga==="CARGADO"?"carg":"vac")+'">'+(v.carga==="CARGADO"?"Cargado":"Vacío")+'</span></td>'+
+          '<td>'+esc(v.guia||"—")+'</td>'+
+          '<td class="r">'+s2(k.flete)+'</td><td class="r">'+s2(k.gastos)+'</td>'+
+          '<td class="r"><strong style="color:'+(k.utilidad>=0?"var(--verde-d)":"var(--danger)")+'">'+s2(k.utilidad)+'</strong></td>'+
+          '<td class="r"><button class="btn btn-ghost btn-sm" data-liq="'+v._id+'">Ver</button></td></tr>';
+      }).join("");
+      var h='';
+      if(vac.n) h+='<div class="box" style="background:var(--danger-light)"><div class="lin"><span><strong>Tramos vacíos:</strong> '+vac.n+'</span><b style="color:var(--danger)">S/ '+s2(vac.g)+' de gasto sin ingreso</b></div>'+
+        '<div class="mini" style="margin-top:4px">Esto es lo que cuesta mover carros vacíos. Antes no se podía medir.</div></div>';
+      h+='<div class="table-wrap"><table class="t"><thead><tr><th>Placa</th><th>Fecha</th><th>Tramo</th><th>Carga</th><th>Guía</th><th class="r">Flete</th><th class="r">Gastos</th><th class="r">Utilidad</th><th></th></tr></thead><tbody>'+filas+
+        '<tr style="background:var(--border-light)"><td colspan="5"><strong>TOTAL</strong></td><td class="r"><strong>'+s2(tot.f)+'</strong></td><td class="r"><strong>'+s2(tot.g)+'</strong></td><td class="r"><strong style="color:'+(tot.u>=0?"var(--verde-d)":"var(--danger)")+'">'+s2(tot.u)+'</strong></td><td></td></tr>'+
+        '</tbody></table></div>';
+      return h;
+    }
+
+    // ─────────── LIQUIDACIÓN ───────────
+    function vrow(x){
+      x=x||{};
+      var d=document.createElement("div"); d.className="vrow";
+      d.innerHTML='<input type="date" class="vf"><input class="vl" placeholder="Lugar"><input class="vc" placeholder="Concepto (peaje, comida, cochera…)"><input type="number" step="0.01" class="vm" placeholder="0.00"><button type="button" class="vx">✕</button>';
+      d.querySelector(".vf").value=x.fecha||""; d.querySelector(".vl").value=x.lugar||"";
+      d.querySelector(".vc").value=x.concepto||""; d.querySelector(".vm").value=(x.monto!=null?x.monto:"");
+      d.querySelector(".vx").onclick=function(){ d.remove(); pintaTot(); };
+      d.querySelectorAll("input").forEach(function(i){ i.oninput=pintaTot; });
+      document.getElementById("vlist").appendChild(d);
+    }
+    function leerViaticos(){
+      if(!document.getElementById("vlist")) return (ACT&&ACT.viaticos)||[];
+      var out=[];
+      document.querySelectorAll("#vlist .vrow").forEach(function(r){
+        var m=n(r.querySelector(".vm").value);
+        var c=r.querySelector(".vc").value.trim();
+        if(m||c) out.push({fecha:r.querySelector(".vf").value||"", lugar:r.querySelector(".vl").value.trim(),
+                           concepto:c, monto:m});
+      });
+      return out;
+    }
+    function borrador(){
+      var v={}; for(var kk in ACT) if(ACT.hasOwnProperty(kk)) v[kk]=ACT[kk];
+      v.viaticos=leerViaticos();
+      ["guia","tne","tc","estiba","toldeo","descarga"].forEach(function(k){
+        var el=document.getElementById("q_"+k); if(el) v[k]= (k==="guia")? el.value.trim() : n(el.value);
+      });
+      var ent=document.getElementById("q_ent"); if(ent) v.viaticosEntregado=n(ent.value);
+      return v;
+    }
+    function pintaTot(){
+      if(!document.getElementById("tot")) return;   // Contabilidad no ve el resumen de dinero
+      var v=borrador(), k=calc(v), c=conceptosDe(v);
+      var h='';
+      if(v.carga==="CARGADO"){
+        h+='<div class="lin"><span>Flete (tarifa '+s2(n(v.tarifaUsada)||tarifaEn(v.ruta,v.fechaInicio))+' × '+s2(v.tne)+' TNE'+(monedaDe(v)==="USD"?" × TC "+s2(v.tc):"")+')</span><b style="color:var(--verde-d)">+ '+s2(k.flete)+'</b></div>';
+      } else {
+        h+='<div class="lin"><span>Tramo vacío — sin guía, sin factura</span><b>+ 0.00</b></div>';
+      }
+      h+='<div class="lin"><span>Viáticos ('+(v.viaticos||[]).length+' líneas)</span><b>− '+s2(k.viaticos)+'</b></div>';
+      if(c.estiba)   h+='<div class="lin"><span>Estiba</span><b>− '+s2(v.estiba)+'</b></div>';
+      if(c.toldeo)   h+='<div class="lin"><span>Toldeo</span><b>− '+s2(v.toldeo)+'</b></div>';
+      if(c.descarga) h+='<div class="lin"><span>Descarga</span><b>− '+s2(v.descarga)+'</b></div>';
+      h+='<div class="lin"><span>Combustible / GNL <span class="auto">AUTO '+k.auto.nComb+'</span></span><b>− '+s2(k.auto.combustible)+'</b></div>';
+      h+='<div class="lin"><span>Lavado <span class="auto">AUTO '+k.auto.nLav+'</span></span><b>− '+s2(k.auto.lavado)+'</b></div>';
+      if(k.auto.nMant) h+='<div class="lin" style="opacity:.65"><span>Mantenimiento en estas fechas <span class="auto">INFO</span></span><b>S/ '+s2(k.auto.mant)+'</b></div>'+
+        '<div class="mini" style="margin:-2px 0 6px">No se resta del tramo: el mantenimiento es de la unidad, no del viaje. Se ve en Rentabilidad.</div>';
+      h+='<div class="lin tot"><span>UTILIDAD DEL TRAMO</span><b style="color:'+(k.utilidad>=0?"var(--verde-d)":"var(--danger)")+'">S/ '+s2(k.utilidad)+'</b></div>';
+      var ent=n(v.viaticosEntregado);
+      if(ent){ var dif=ent-k.viaticos;
+        h+='<div class="lin" style="margin-top:8px;border-top:1px dashed var(--border-strong);padding-top:8px"><span>Entregado al conductor (vuelta)</span><b>'+s2(ent)+'</b></div>';
+        h+='<div class="lin"><span>Rendido en este tramo</span><b>'+s2(k.viaticos)+'</b></div>';
+        h+='<div class="lin"><span><strong>Diferencia</strong></span><b style="color:'+(Math.abs(dif)<0.5?"var(--text-muted)":"var(--amber)")+'">'+s2(dif)+'</b></div>';
+      }
+      document.getElementById("tot").innerHTML=h;
+    }
+
+    function chip(ok, okTxt, pendTxt){
+      return ok ? '<div class="chipbig ok">✓ '+esc(okTxt)+'</div>' : '<div class="chipbig pend">⏳ '+esc(pendTxt)+'</div>';
+    }
+    function abrirLiq(id){
+      var v=VIAJES.filter(function(x){return x._id===id;})[0]; if(!v) return;
+      ACT=v;
+      var cerrado = v.estado==="CERRADO";
+      var editaGuia    = !cerrado && (ESADMIN || CTB);
+      var editaViatico = !cerrado && (ESADMIN || CTB);
+      var editaExtras  = !cerrado && ESADMIN;
+      var puedeEditar  = editaGuia || editaViatico || editaExtras;
+      var c=conceptosDe(v), a=autoDe(v);
+      document.getElementById("mtit").textContent = (puedeEditar?"Liquidar ":"Viaje ")+v.placa;
+      document.getElementById("msub").innerHTML = esc(v.origen||"?")+" → "+esc(v.destino||"?")+" · "+esc(v.ruta||"")+" · "+
+        (v.carga==="CARGADO"?"<strong>Cargado</strong>":"<strong>Vacío</strong>")+" · "+esc(v.fechaInicio||"")+(v.fechaFin?(" → "+esc(v.fechaFin)):" → <em>en ruta</em>");
+
+      var h='';
+      // ── GUÍA + TONELAJE — Contabilidad ──
+      if(v.carga==="CARGADO"){
+        h+='<h4 class="sec4">Guía y tonelaje <span class="own">Contabilidad</span></h4>';
+        if(editaGuia){
+          h+='<div class="grid2">';
+          h+='<div class="fld"><label>Guía de remisión / transportista *</label><input id="q_guia" value="'+esc(v.guia||"")+'" placeholder="Ej. T001-1234"></div>';
+          h+='<div class="fld"><label>Tonelaje (TNE) *</label><input type="number" step="0.01" id="q_tne" value="'+esc(v.tne||"")+'"></div>';
+          h+='</div>';
+          h+= v.guiaId
+            ? '<div class="box" style="background:var(--verde-l)"><div style="font-size:.84rem"><strong>✓ Tomada del PDF</strong> — '+esc(v.guia)+' · '+s2(v.tne)+' TNE. <a href="../../contabilidad/guias/">Ver en Resumen de guías</a></div></div>'
+            : '<div class="box" style="background:#FBEEDE"><div style="font-size:.84rem">Lo normal: arrastra el PDF en <a href="../../contabilidad/guias/"><strong>Resumen de guías</strong></a> y el número y las toneladas caen solos. Escríbelo a mano solo si no hay PDF.</div></div>';
+          if(monedaDe(v)==="USD" && ESADMIN) h+='<div class="fld"><label>Tipo de cambio (tarifa en USD)</label><input type="number" step="0.001" id="q_tc" value="'+esc(v.tc||"")+'" placeholder="3.75"></div>';
+        } else {
+          h+=chip(!!v.guia, (v.guia||"")+(v.tne?(" · "+s2(v.tne)+" TNE"):""), "Pendiente — la sube Contabilidad");
+        }
+      }
+      // ── VIÁTICOS — Contabilidad ──
+      h+='<h4 class="sec4">Viáticos <span class="own">Contabilidad</span></h4>';
+      if(editaViatico){
+        h+='<div class="mini" style="margin-bottom:9px">Escribe cada línea como ya la anotan: fecha, lugar, concepto y monto. Con la fecha, el sistema sabe a qué tramo pertenece.</div>';
+        h+='<div class="fld" style="max-width:280px"><label>Entregado al conductor (por la vuelta)</label><input type="number" step="0.01" id="q_ent" value="'+esc(v.viaticosEntregado||"")+'"></div>';
+        h+='<div id="vlist"></div>';
+        h+='<button type="button" class="btn btn-ghost btn-sm" id="btnV">+ Agregar línea</button>';
+      } else {
+        var vt=viaticosTotal(v);
+        h+=chip(vt>0, (VER_MONTOS?("S/ "+s2(vt)):"Cargados"), "Pendiente — los carga Contabilidad");
+      }
+      // ── ESTIBA / TOLDEO / DESCARGA — Admin ──
+      if((c.estiba||c.toldeo||c.descarga) && (editaExtras||VER_MONTOS)){
+        h+='<h4 class="sec4">Estiba · toldeo · descarga <span class="own">Admin</span></h4>';
+        if(editaExtras){
+          h+='<div class="grid2">';
+          if(c.estiba)   h+='<div class="fld"><label>Estiba (S/)</label><input type="number" step="0.01" id="q_estiba" value="'+esc(v.estiba||"")+'"></div>';
+          if(c.toldeo)   h+='<div class="fld"><label>Toldeo (S/)</label><input type="number" step="0.01" id="q_toldeo" value="'+esc(v.toldeo||"")+'"></div>';
+          if(c.descarga) h+='<div class="fld"><label>Descarga (S/)</label><input type="number" step="0.01" id="q_descarga" value="'+esc(v.descarga||"")+'"></div>';
+          h+='</div>';
+        } else if(VER_MONTOS){
+          var ex=[]; if(c.estiba)ex.push("Estiba S/ "+s2(v.estiba)); if(c.toldeo)ex.push("Toldeo S/ "+s2(v.toldeo)); if(c.descarga)ex.push("Descarga S/ "+s2(v.descarga));
+          h+='<div class="mini">'+esc(ex.join(" · "))+' — los carga el administrador</div>';
+        }
+      }
+      // ── RESUMEN ──
+      if(VER_MONTOS){
+        h+='<div class="box" id="tot"></div>';
+      } else {
+        h+='<h4 class="sec4">Estado del viaje</h4><div class="falta" style="margin-bottom:4px">'
+          + (v.carga==="CARGADO"?(v.guia?'<span class="f ok">✓ Guía</span>':'<span class="f req">Falta guía</span>'):'')
+          + (viaticosTotal(v)>0?'<span class="f ok">✓ Viáticos</span>':'<span class="f req">Faltan viáticos</span>')
+          + (a.nComb?'<span class="f ok">✓ Combustible</span>':'<span class="f esp">Sin combustible aún</span>')
+          + (a.nLav?'<span class="f ok">✓ Lavado</span>':'<span class="f esp">Sin lavado aún</span>')
+          + '</div><div class="mini">Los montos totales y la utilidad los ve el administrador.</div>';
+      }
+      document.getElementById("mbody").innerHTML=h;
+
+      if(editaViatico){
+        (v.viaticos||[]).forEach(vrow);
+        if(!(v.viaticos||[]).length) vrow({fecha:v.fechaInicio||""});
+        document.getElementById("btnV").onclick=function(){ vrow({fecha:v.fechaInicio||""}); };
+      }
+      if(VER_MONTOS){
+        document.getElementById("mbody").querySelectorAll("input,select").forEach(function(i){ i.oninput=pintaTot; });
+        pintaTot();
+      }
+      document.getElementById("mSave").style.display   = puedeEditar?"":"none";
+      document.getElementById("mCerrar").style.display = (ESADMIN && !cerrado && v.estado==="LLEGO")?"":"none";
+      document.getElementById("merr").classList.add("hidden");
+      document.getElementById("modal").classList.remove("hidden");
+    }
+
+    function guardarLiq(cerrar){
+      var v=borrador();
+      var err=document.getElementById("merr");
+      if(cerrar){ if(!ESADMIN){ err.textContent="Solo el administrador cierra el viaje."; err.classList.remove("hidden"); return; }
+                  var m=puedeCerrar(v); if(m){ err.textContent=m; err.classList.remove("hidden"); return; } }
+      var patch={ liquidadoPor:(PERFIL&&PERFIL.nombre)||UID, liquidadoTs:new Date().toISOString() };
+      // Guía+tonelaje y viáticos: Contabilidad (o admin). Coincide con la regla de Firestore.
+      if(ESADMIN || CTB){
+        if(v.carga==="CARGADO"){ patch.guia=v.guia||""; patch.tne=n(v.tne); }
+        patch.viaticos=v.viaticos; patch.viaticosEntregado=n(v.viaticosEntregado); patch.viaticosTotal=viaticosTotal(v);
+      }
+      // Estiba/toldeo/descarga, TC y tarifa: solo Admin.
+      if(ESADMIN){
+        patch.tc=n(v.tc); patch.estiba=n(v.estiba); patch.toldeo=n(v.toldeo); patch.descarga=n(v.descarga);
+        // Fotografía de la tarifa: se congela el número con el que se liquidó,
+        // para que revisar este viaje dentro de un año no lo revalorice con la
+        // tarifa que esté vigente ese día.
+        patch.tarifaUsada=n(v.tarifaUsada)||tarifaEn(v.ruta,v.fechaInicio);
+      }
+      if(cerrar){ var k=calc(v); patch.estado="CERRADO"; patch.flete=k.flete; patch.gastos=k.gastos;
+                  patch.utilidad=k.utilidad; patch.cerradoTs=new Date().toISOString(); }
+      var b1=document.getElementById("mSave"), b2=document.getElementById("mCerrar");
+      b1.disabled=b2.disabled=true;
+      TRAZZA.db.guardar("viajes", ACT._id, patch).then(function(){
+        b1.disabled=b2.disabled=false;
+        document.getElementById("modal").classList.add("hidden");
+        cargar();
+      }).catch(function(e){ b1.disabled=b2.disabled=false; err.textContent="No se pudo guardar: "+e.message; err.classList.remove("hidden"); });
+    }
+
+    function marcarLlego(id){
+      var v=VIAJES.filter(function(x){return x._id===id;})[0]; if(!v) return;
+      var f=prompt("¿Qué día llegó?", hoy()); if(!f) return;
+      if(f < String(v.fechaInicio||"")){ alert("No puede llegar antes de salir ("+v.fechaInicio+")."); return; }
+      TRAZZA.db.guardar("viajes", id, {estado:"LLEGO", fechaFin:f}).then(function(){
+        // Cierra el registro en Estatus de flota: la unidad ya no está en ruta.
+        var uid=ID_UNIDAD[NP(v.placa)];
+        if(uid) return TRAZZA.db.guardar("operaciones", uid,
+          {ubicacion:v.destino||"", en_ruta:false, viaje_destino:"", viaje_desde:""}).catch(function(){});
+      }).then(cargar).catch(function(e){ alert("Error: "+e.message); });
+    }
+    function borrar(id){
+      if(!confirm("¿Borrar este viaje? No se puede deshacer.")) return;
+      TRAZZA.db.borrar("viajes", id).then(cargar).catch(function(e){ alert("Error: "+e.message); });
+    }
+
+    function abrirNuevo(){
+      var hoyS=hoy();
+      document.getElementById("n_ruta").innerHTML=Object.keys(RUTAS).sort().map(function(r){return '<option>'+esc(r)+'</option>';}).join("");
+      document.getElementById("n_placa").innerHTML='<option value=""></option>'+PLACAS.map(function(p){return '<option>'+esc(p)+'</option>';}).join("");
+      document.getElementById("n_cond").innerHTML='<option value=""></option>'+CONDS.map(function(c){return '<option>'+esc(c)+'</option>';}).join("");
+      document.getElementById("n_ini").value=hoyS; document.getElementById("n_fin").value="";
+      document.getElementById("n_ori").value=""; document.getElementById("n_des").value="";
+      document.getElementById("nerr").classList.add("hidden");
+      document.getElementById("modalN").classList.remove("hidden");
+    }
+    function crearNuevo(){
+      var er=document.getElementById("nerr");
+      function V(id){ return (document.getElementById(id).value||"").trim(); }
+      var placa=V("n_placa"), ruta=V("n_ruta"), ori=V("n_ori").toUpperCase(), des=V("n_des").toUpperCase(), ini=V("n_ini"), fin=V("n_fin");
+      if(!placa||!ruta||!ori||!des||!ini){ er.textContent="Faltan placa, ruta, origen, destino y fecha de salida."; er.classList.remove("hidden"); return; }
+      if(fin && fin<ini){ er.textContent="No puede llegar antes de salir."; er.classList.remove("hidden"); return; }
+      var ro=RUTAS[ruta]||{};
+      var b=document.getElementById("nSave"); b.disabled=true;
+      // Se fotografían moneda, conceptos y cliente EN EL VIAJE. Si mañana el
+      // maestro cambia la moneda de la ruta, este tramo sigue liquidando con
+      // la que tenía el día que salió.
+      TRAZZA.db.guardar("viajes", null, {
+        modulo:"viajes",
+        placa:placa, tolva:"", conductor:V("n_cond"), dni:"",
+        ruta:ruta, origen:ori, destino:des, carga:V("n_carga"),
+        fechaInicio:ini, fechaFin:fin, estado: fin?"LLEGO":"EN_TRANSITO",
+        guia:"", tne:0, tc:0, tarifaUsada:0,
+        moneda:ro.moneda||"PEN", conceptos:ro.conceptos||{}, cliente:ro.cliente||"",
+        viaticos:[], viaticosEntregado:0, viaticosTotal:0,
+        estiba:0, toldeo:0, descarga:0, descCarga:"", mes:ini.slice(0,7),
+        manual:true, creadoTs:new Date().toISOString(), creadoPor:(PERFIL&&PERFIL.nombre)||""
+      }).then(function(){
+        b.disabled=false; document.getElementById("modalN").classList.add("hidden");
+        var uid=ID_UNIDAD[NP(placa)];
+        if(uid && !fin) TRAZZA.db.guardar("operaciones", uid, {ubicacion:"EN RUTA → "+des, en_ruta:true, viaje_destino:des, viaje_desde:ini}).catch(function(){});
+        cargar();
+      }).catch(function(e){ b.disabled=false; er.textContent="No se pudo crear: "+e.message; er.classList.remove("hidden"); });
+    }
+
+    function cargarGastos(){
+      var ps=["combustible","gnl","lavado"].map(function(m){
+        return TRAZZA.db.listar({coleccion:"operaciones", modulo:m})
+          .then(function(a){ GASTOS[m]=a; })
+          .catch(function(){ GASTOS[m]=[]; });
+      });
+      ps.push(TRAZZA.db.listar({coleccion:"mantenimiento", modulo:"fallas"})
+        .then(function(a){ GASTOS.mantenimiento=a; })
+        .catch(function(){ GASTOS.mantenimiento=[]; }));
+      return Promise.all(ps);
+    }
+
+    function cargar(){
+      // Sin `modulo`: la colección viajes no está partida por módulo. El
+      // filtro por empresaId lo pone TRAZZA.db y no es opcional.
+      return TRAZZA.db.listar({coleccion:"viajes"}).then(function(a){
+        VIAJES=a.sort(function(x,y){ return String(y.fechaInicio||"").localeCompare(String(x.fechaInicio||"")); });
+        var t=VIAJES.filter(function(v){return v.estado==="EN_TRANSITO";}).length;
+        document.getElementById("sub").textContent = VIAJES.length+" viajes · "+t+" en ruta ahora";
+        render();
+      });
+    }
+
+    document.getElementById("filtros").addEventListener("click",function(e){
+      var c=e.target.closest("[data-f]"); if(!c) return; FILTRO=c.getAttribute("data-f"); render();
+    });
+    document.getElementById("cuerpo").addEventListener("click",function(e){
+      var a=e.target.closest("[data-liq]"), b=e.target.closest("[data-llego]"), d=e.target.closest("[data-del]");
+      if(a) abrirLiq(a.getAttribute("data-liq"));
+      else if(b) marcarLlego(b.getAttribute("data-llego"));
+      else if(d) borrar(d.getAttribute("data-del"));
+    });
+    document.getElementById("btnNuevo").onclick=abrirNuevo;
+    document.getElementById("nx").onclick=function(){ document.getElementById("modalN").classList.add("hidden"); };
+    document.getElementById("nCancel").onclick=function(){ document.getElementById("modalN").classList.add("hidden"); };
+    document.getElementById("nSave").onclick=crearNuevo;
+    document.getElementById("mx").onclick=function(){ document.getElementById("modal").classList.add("hidden"); };
+    document.getElementById("mCancel").onclick=function(){ document.getElementById("modal").classList.add("hidden"); };
+    document.getElementById("mSave").onclick=function(){ guardarLiq(false); };
+    document.getElementById("mCerrar").onclick=function(){ guardarLiq(true); };
+    document.getElementById("logoutBtn").onclick=function(){ TRAZZA.logout(); };
+
+    TRAZZA.requireLogin().then(function(s){
+      UID=s.user.uid; PERFIL=s.perfil;
+      ESADMIN = TRAZZA.esAdmin(PERFIL);
+      OPS = TRAZZA.puedeVer(PERFIL,"operaciones");
+      CTB = TRAZZA.puedeVer(PERFIL,"contabilidad");
+      VER_MONTOS = ESADMIN || OPS;   // montos y utilidad: admin + operaciones (+ a quien tengan el área)
+      if(!OPS && !CTB && !TRAZZA.puedeVer(PERFIL,"mantenimiento")){ location.href=TRAZZA.ROOT+"index.html"; return; }
+      document.getElementById("nota").innerHTML = OPS
+        ? "<strong>Cada tramo es un viaje.</strong> Los viajes nacen al confirmar la programación. La guía es el DNI del tramo cargado: si va vacío no hay guía ni factura, pero los gastos igual corren. Combustible, GNL, lavado y mantenimiento se enganchan solos por placa y fechas."
+        : "<strong>Liquidación de viáticos.</strong> Carga cada línea de la hoja tal como viene: fecha, lugar, concepto y monto. El resto de gastos se engancha solo.";
+      document.getElementById("app").style.display="";
+      return MAESTROS.rutas().then(function(rs){
+        (rs||[]).forEach(function(r){ RUTAS[r.nombre]=r; });
+        return MAESTROS.unidades().catch(function(){return [];});
+      }).then(function(us){
+        (us||[]).forEach(function(u){ if(u.placa&&u._id) ID_UNIDAD[NP(u.placa)]=u._id;
+          if(u.placa && String(u.estado||"")!=="Baja" && String(u.tipo||"")==="Tracto") PLACAS.push(u.placa); });
+        PLACAS.sort();
+        if(OPS) document.getElementById("btnNuevo").style.display="";
+        return MAESTROS.conductores().catch(function(){return [];});
+      }).then(function(cs){
+        CONDS=cs||[];
+        return cargarGastos();
+      }).then(cargar);
+    }).catch(function(e){ console.error(e); });
+  })();
+  </script>
+</body>
+</html>
