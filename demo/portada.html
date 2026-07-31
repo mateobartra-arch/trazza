@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trazza — Transportistas homologados, listos para entrar a mina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!--
+  TRAZZA — PORTADA PÚBLICA
+  ========================
+  Formato de referencia: portadas tipo Avetta / EVA.
+  Foto a sangre + capa oscura + titular centrado en dos pesos + un solo botón verde.
+
+  >>> PARA PONER TU PROPIA FOTO <<<
+  Una sola línea. En el bloque :root de abajo, cambia:
+      --foto: none;
+  por:
+      --foto: url('portada.jpg');
+  y deja portada.jpg en la misma carpeta que este archivo.
+  Recomendado: horizontal, mínimo 2000px de ancho, escena oscura o a contraluz
+  (camión en carretera, tolva, garita de mina, corredor sur al atardecer).
+  Mientras no haya foto, se dibuja la escena vectorial del Misti que ya está incluida.
+
+  DATOS DE DEMOSTRACIÓN — 100% FICTICIOS.
+-->
+<style>
+:root{
+  --foto: none;                     /* <<< cambia esto por url('portada.jpg') */
+  --basalt:#12161C; --basalt2:#1B2129; --basalt3:#2B3441; --basalt4:#3E4956;
+  --niebla:#EBEFF3; --papel:#FFFFFF;
+  --cobre:#C0703A; --cardenillo:#12897A; --verde:#16B39C; --ambar:#B8820F; --ocre:#A93529;
+  --tinta:#151A20; --tinta2:#59636F; --tinta3:#8B95A1; --linea:#D9DFE6;
+  --r:14px; --r2:8px;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --disp:"Archivo","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sombra:0 1px 2px rgba(18,22,28,.06),0 8px 24px -12px rgba(18,22,28,.18);
+  --sombra2:0 30px 70px -28px rgba(18,22,28,.5);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--papel);color:var(--tinta);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--verde);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+
+/* ================= NAV ================= */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .28s,border-color .28s,backdrop-filter .28s;border-bottom:1px solid transparent}
+.nav.solido{background:rgba(18,22,28,.94);backdrop-filter:blur(10px);border-bottom-color:rgba(255,255,255,.08)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:74px}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;flex:0 0 auto}
+.glifo{width:28px;height:28px;border-radius:8px;background:linear-gradient(140deg,var(--cobre),var(--verde));position:relative;flex:0 0 auto}
+.glifo:after{content:"";position:absolute;left:7.5px;top:12.5px;width:13px;height:3px;background:#fff;border-radius:2px}
+.wordmark{font:600 21px/1 var(--disp);letter-spacing:.19em;text-transform:uppercase;color:#fff}
+.menu{display:flex;gap:26px;margin-left:auto;align-items:center}
+.menu a{color:#E6EAEF;text-decoration:none;font-size:15px;padding:6px 0;border-bottom:1.5px solid transparent;transition:border-color .16s,color .16s}
+.menu a:hover{border-bottom-color:var(--verde)}
+.entrar{color:#fff;text-decoration:none;font-size:15px;font-weight:500;border:1.5px solid rgba(255,255,255,.45);border-radius:7px;padding:9px 17px;transition:border-color .16s,background .16s}
+.entrar:hover{border-color:#fff;background:rgba(255,255,255,.09)}
+.cta{display:inline-block;background:var(--verde);color:#08221E;text-decoration:none;font:600 15px/1 var(--sans);border:0;border-radius:7px;padding:12px 20px;cursor:pointer;transition:background .16s,transform .07s,box-shadow .16s}
+.cta:hover{background:#1ECBB1;box-shadow:0 10px 26px -10px rgba(22,179,156,.7)}
+.cta:active{transform:translateY(1px)}
+.hamb{display:none;margin-left:auto;background:none;border:1.5px solid rgba(255,255,255,.4);border-radius:7px;color:#fff;padding:9px 12px;font-size:14px;cursor:pointer}
+
+/* ================= HERO ================= */
+.hero{position:relative;min-height:100svh;display:grid;place-items:center;text-align:center;overflow:hidden;background:var(--basalt)}
+.escena,.fototapa{position:absolute;inset:0;width:100%;height:100%}
+.escena svg{width:100%;height:100%;display:block}
+.fototapa{background-image:var(--foto);background-size:cover;background-position:center 60%;display:var(--fotoDisplay,none)}
+/* El velo oscurece lo justo para que el texto blanco se lea, pero deja ver la
+   escena (o tu foto). Banda oscura arriba para la barra, banda oscura abajo
+   para el arranque de las tarjetas, y una columna central apenas velada. */
+.velo{position:absolute;inset:0;background:
+   radial-gradient(88% 62% at 50% 40%, rgba(12,15,20,.62) 0%, rgba(12,15,20,.34) 55%, rgba(12,15,20,0) 100%),
+   linear-gradient(to bottom, rgba(12,15,20,.80) 0%, rgba(12,15,20,.26) 20%, rgba(12,15,20,.10) 52%, rgba(12,15,20,.52) 82%, rgba(12,15,20,.94) 100%)}
+.heroTxt{position:relative;z-index:2;padding:128px 32px 156px;max-width:1180px;
+   text-shadow:0 2px 26px rgba(8,10,14,.55)}
+.eyebrow{display:inline-block;font:500 12px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase;color:#8FE3D5;border:1px solid rgba(22,179,156,.42);background:rgba(18,137,122,.16);border-radius:999px;padding:8px 15px;margin-bottom:30px}
+h1{margin:0 0 26px;color:#fff;font-family:var(--disp);font-size:clamp(37px,5.4vw,70px);line-height:1.06;letter-spacing:-.026em;text-wrap:balance}
+h1 .liviano{display:block;font-weight:300;color:#EAEFF3}
+h1 .fuerte{display:block;font-weight:700}
+.heroSub{color:#C3CCD5;font-size:clamp(16px,1.5vw,19px);line-height:1.62;max-width:60ch;margin:0 auto 34px;text-wrap:pretty}
+.heroBtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.heroBtns a{text-shadow:none}   /* la sombra del titular no debe manchar los botones */
+.cta.grande{font-size:16.5px;padding:16px 30px;border-radius:8px}
+.fantasma{display:inline-block;color:#fff;text-decoration:none;font:500 16.5px/1 var(--sans);border:1.5px solid rgba(255,255,255,.4);border-radius:8px;padding:16px 26px;transition:border-color .16s,background .16s}
+.fantasma:hover{border-color:#fff;background:rgba(255,255,255,.09)}
+@keyframes respira{0%,100%{opacity:.25;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ---- animación de entrada ---- */
+.sube{opacity:0;transform:translateY(20px);animation:entra .85s cubic-bezier(.2,.75,.25,1) forwards}
+.d1{animation-delay:.10s}.d2{animation-delay:.24s}.d3{animation-delay:.38s}.d4{animation-delay:.52s}
+@keyframes entra{to{opacity:1;transform:none}}
+
+/* ================= DOS PÚBLICOS (tarjetas montadas) ================= */
+.publicos{position:relative;z-index:3;margin-top:-96px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.pcard{background:var(--papel);border-radius:18px;padding:36px 34px 32px;box-shadow:var(--sombra2);border:1px solid var(--linea);display:flex;flex-direction:column}
+.pcard .k{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--verde);margin-bottom:13px}
+.pcard h2{font:600 25px/1.2 var(--disp);letter-spacing:-.014em;margin:0 0 12px}
+.pcard p{color:var(--tinta2);margin:0 0 20px;flex:1 1 auto}
+.pcard ul{list-style:none;margin:0 0 22px;padding:0}
+.pcard li{padding-left:26px;position:relative;margin-bottom:9px;font-size:15.2px}
+.pcard li:before{content:"";position:absolute;left:0;top:8px;width:13px;height:7px;border-left:2px solid var(--verde);border-bottom:2px solid var(--verde);transform:rotate(-45deg)}
+.pcard .mas{color:var(--tinta);text-decoration:none;font-weight:600;font-size:15px;border-bottom:2px solid var(--verde);padding-bottom:2px;align-self:flex-start}
+
+/* ================= CIFRAS ================= */
+.cifras{background:var(--papel);padding:88px 0 20px}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;border-top:1px solid var(--linea);padding-top:34px}
+.cf .n{font:600 40px/1 var(--disp);letter-spacing:-.028em;color:var(--tinta)}
+.cf .n small{font-size:20px;font-weight:500;color:var(--tinta2);letter-spacing:0}
+.cf .e{color:var(--tinta2);font-size:14.5px;margin-top:9px;line-height:1.48}
+.cf .f{font:400 10.5px/1.4 var(--mono);color:var(--tinta3);margin-top:9px;letter-spacing:.03em}
+
+/* ================= CÓMO FUNCIONA ================= */
+.seccion{padding:96px 0}
+.oscura{background:var(--basalt);color:#fff}
+.rotulo{font:500 11.5px/1 var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--verde);margin:0 0 16px}
+.titulo{font:600 clamp(28px,3.6vw,44px)/1.14 var(--disp);letter-spacing:-.021em;margin:0 0 16px;max-width:20ch;text-wrap:balance}
+.oscura .titulo{color:#fff}
+.entrada{color:var(--tinta2);max-width:62ch;font-size:17px;margin:0}
+.oscura .entrada{color:#AFBAC5}
+.pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+.paso{border:1px solid rgba(255,255,255,.13);border-radius:var(--r);padding:28px 26px;background:rgba(255,255,255,.035);transition:border-color .2s,background .2s,transform .2s}
+.paso:hover{border-color:rgba(22,179,156,.5);background:rgba(22,179,156,.07);transform:translateY(-3px)}
+.paso .num{font:500 11.5px/1 var(--mono);letter-spacing:.14em;color:var(--verde);margin-bottom:15px}
+.paso h3{font:600 20px/1.26 var(--disp);margin:0 0 9px;color:#fff}
+.paso p{color:#A5B0BC;margin:0;font-size:15.2px}
+
+/* ================= TESIS ================= */
+.tesis{background:var(--niebla)}
+.tgrid{display:grid;grid-template-columns:1.06fr .94fr;gap:56px;align-items:center}
+.equiv{background:var(--papel);border:1px solid var(--linea);border-radius:var(--r);padding:24px;box-shadow:var(--sombra)}
+.equiv .h{font:500 11px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--tinta3);margin-bottom:16px}
+.fila{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--linea)}
+.fila:first-of-type{border-top:0}
+.fila .nm{font-size:15px;font-weight:500}
+.fila .nm span{display:block;font:400 12px/1.4 var(--mono);color:var(--tinta3);margin-top:3px}
+.pill{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:#E4F4F1;color:#0B5C52}
+.pill.pv{background:#FBF3E2;color:#77550A}
+.resumen{margin-top:16px;padding-top:15px;border-top:2px solid var(--basalt);font-size:14.6px;color:var(--tinta2)}
+.resumen b{color:var(--tinta)}
+.marca-sup{font:500 10px/1 var(--mono);letter-spacing:.07em;color:var(--tinta3);background:var(--niebla);border-radius:4px;padding:4px 6px;display:inline-block;margin-top:9px}
+
+/* ================= CIERRE ================= */
+.cierre{background:var(--basalt2);color:#fff;text-align:center;padding:96px 0}
+.cierre .titulo{margin:0 auto 16px;color:#fff}
+.cierre p{color:#AFBAC5;max-width:56ch;margin:0 auto 32px;font-size:17px}
+
+/* ================= PIE ================= */
+.pie{background:var(--basalt);color:#8993A0;padding:44px 0 40px;border-top:1px solid rgba(255,255,255,.08);font-size:13.6px;line-height:1.68}
+.pie b{color:#B8C2CD;font-weight:500}
+.pie .fl{display:flex;justify-content:space-between;gap:24px;align-items:center;flex-wrap:wrap;margin-bottom:26px}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:980px){
+  .tgrid{grid-template-columns:1fr;gap:34px}
+  .pasos{grid-template-columns:1fr}
+  .cgrid{grid-template-columns:1fr 1fr;gap:28px 20px}
+  /* Debajo de 980px la barra no cabe en una línea: se pliega en panel. */
+  .menu{display:none}
+  .hamb{display:block}
+  .menu.abierto{display:flex;flex-direction:column;align-items:stretch;gap:2px;
+    position:absolute;top:100%;left:0;right:0;
+    background:rgba(18,22,28,.985);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,.10);
+    padding:14px 20px 20px;box-shadow:0 26px 50px -24px rgba(0,0,0,.8)}
+  .menu.abierto a{padding:13px 2px;border-bottom:1px solid rgba(255,255,255,.07);font-size:16px}
+  .menu.abierto a:hover{border-bottom-color:rgba(255,255,255,.07);color:var(--verde)}
+  .menu.abierto .entrar,.menu.abierto .cta{text-align:center;margin-top:12px;border-bottom:0;padding:13px 18px}
+  .menu.abierto .cta{margin-top:8px}
+}
+/* En móvil el texto ocupa todo el ancho: se quita el velo radial central
+   (que apagaba el atardecer) y se confía en la sombra del texto. */
+@media (max-width:700px){
+  .velo{background:linear-gradient(to bottom, rgba(12,15,20,.84) 0%, rgba(12,15,20,.30) 22%, rgba(12,15,20,.20) 56%, rgba(12,15,20,.58) 84%, rgba(12,15,20,.95) 100%)}
+  .heroTxt{text-shadow:0 2px 20px rgba(8,10,14,.85),0 1px 4px rgba(8,10,14,.6)}
+}
+@media (max-width:800px){
+  .wrap{padding:0 20px}
+  .nav .wrap{height:64px}
+  .pgrid{grid-template-columns:1fr}
+  .publicos{margin-top:-62px}
+  .heroTxt{padding:112px 20px 130px}
+  .seccion{padding:66px 0}
+  .cifras{padding:64px 0 12px}
+}
+@media (max-width:520px){
+  .cgrid{grid-template-columns:1fr}
+  .heroBtns{flex-direction:column}
+  .cta.grande,.fantasma{width:100%;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .sube{animation:none;opacity:1;transform:none}
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="glifo"></span><span class="wordmark">Trazza</span></a>
+    <div class="menu" id="menu">
+      <a href="#como">Cómo funciona</a>
+      <a href="#tesis">Homologación</a>
+      <a href="#cifras">Por qué ahora</a>
+      <a class="entrar" href="#" id="lnkEntrar">Iniciar sesión</a>
+      <a class="cta" href="#cierre">Solicitar una demostración</a>
+    </div>
+    <button class="hamb" type="button" id="hamb" aria-label="Abrir menú" aria-controls="menu" aria-expanded="false">Menú</button>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero" id="top">
+
+  <!-- Escena vectorial: corredor minero del sur al atardecer. Se reemplaza sola si defines --foto. -->
+  <div class="escena" aria-hidden="true">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" role="img">
+      <defs>
+        <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#0C1119"/>
+          <stop offset="30%"  stop-color="#22222C"/>
+          <stop offset="55%"  stop-color="#5A3B23"/>
+          <stop offset="76%"  stop-color="#A85D28"/>
+          <stop offset="100%" stop-color="#E08B46"/>
+        </linearGradient>
+        <radialGradient id="sol" cx="50%" cy="100%" r="62%">
+          <stop offset="0%"   stop-color="#FFC07A" stop-opacity="1"/>
+          <stop offset="42%"  stop-color="#D8853F" stop-opacity=".62"/>
+          <stop offset="100%" stop-color="#C0703A" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="lejos" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3A2E33"/><stop offset="100%" stop-color="#241E27"/>
+        </linearGradient>
+        <linearGradient id="cerca" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1E1A20"/><stop offset="100%" stop-color="#101116"/>
+        </linearGradient>
+        <linearGradient id="pista" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#403C41"/><stop offset="100%" stop-color="#14161B"/>
+        </linearGradient>
+        <linearGradient id="polvo" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#C0703A" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#E9A46B" stop-opacity=".26"/>
+          <stop offset="100%" stop-color="#C0703A" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="faro" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FFF4DE" stop-opacity=".95"/>
+          <stop offset="34%" stop-color="#FFD79B" stop-opacity=".42"/>
+          <stop offset="100%" stop-color="#FFC178" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- cielo y sol -->
+      <rect width="1600" height="900" fill="url(#cielo)"/>
+      <ellipse cx="820" cy="620" rx="880" ry="330" fill="url(#sol)"/>
+
+      <!-- cordillera lejana con el cono del Misti -->
+      <path fill="url(#lejos)" d="M0 596 L118 556 L214 588 L318 522 L392 566 L470 512
+        L560 404 L590 372 L622 348 L664 372 L700 412 L788 520 L864 476 L946 528
+        L1042 470 L1128 524 L1226 486 L1330 540 L1428 500 L1520 552 L1600 522 L1600 900 L0 900 Z"/>
+      <!-- nieve del cono -->
+      <path fill="#7A6A72" opacity=".38" d="M609 368 L622 349 L639 361 L631 372 L619 366 Z"/>
+
+      <!-- cerro cercano izquierdo -->
+      <path fill="url(#cerca)" d="M0 668 L146 616 L268 660 L392 620 L470 662 L470 900 L0 900 Z"/>
+      <!-- cerro cercano derecho -->
+      <path fill="url(#cerca)" d="M1160 656 L1288 612 L1404 654 L1520 618 L1600 650 L1600 900 L1160 900 Z"/>
+
+      <!-- carretera en fuga -->
+      <path fill="url(#pista)" d="M742 626 L862 626 L1348 900 L246 900 Z"/>
+      <!-- bermas -->
+      <path fill="#3A3730" opacity=".55" d="M742 626 L754 626 L282 900 L246 900 Z"/>
+      <path fill="#3A3730" opacity=".55" d="M850 626 L862 626 L1348 900 L1312 900 Z"/>
+      <!-- línea central discontinua -->
+      <g fill="#DCD6C6" opacity=".55">
+        <polygon points="799,632 805,632 807,656 797,656"/>
+        <polygon points="796,672 808,672 811,708 793,708"/>
+        <polygon points="791,730 813,730 818,784 786,784"/>
+        <polygon points="783,812 821,812 829,900 775,900"/>
+      </g>
+
+      <!-- camión que se aleja (vista posterior) -->
+      <g opacity=".96">
+        <rect x="742" y="524" width="116" height="92" rx="4" fill="#0E1014"/>
+        <rect x="742" y="524" width="116" height="12" rx="3" fill="#191C22"/>
+        <rect x="750" y="546" width="100" height="52" rx="2" fill="#15181E"/>
+        <rect x="760" y="616" width="18" height="14" fill="#0A0B0E"/>
+        <rect x="822" y="616" width="18" height="14" fill="#0A0B0E"/>
+        <rect x="752" y="600" width="22" height="7" rx="3" fill="#C4382C"/>
+        <rect x="826" y="600" width="22" height="7" rx="3" fill="#C4382C"/>
+        <circle cx="763" cy="603" r="19" fill="#D8422F" opacity=".34"/>
+        <circle cx="837" cy="603" r="19" fill="#D8422F" opacity=".34"/>
+      </g>
+
+      <!-- camión que viene de frente: solo faros -->
+      <circle cx="962" cy="646" r="62" fill="url(#faro)"/>
+      <circle cx="1004" cy="648" r="54" fill="url(#faro)"/>
+      <rect x="946" y="640" width="72" height="16" rx="7" fill="#0C0E12" opacity=".55"/>
+
+      <!-- polvo suspendido -->
+      <rect x="0" y="596" width="1600" height="72" fill="url(#polvo)"/>
+      <rect x="0" y="668" width="1600" height="120" fill="url(#polvo)" opacity=".55"/>
+    </svg>
+  </div>
+
+  <div class="fototapa" aria-hidden="true"></div>
+  <div class="velo" aria-hidden="true"></div>
+
+  <div class="heroTxt">
+    <span class="eyebrow sube d1">Corredor minero del sur · Perú</span>
+    <h1>
+      <span class="liviano sube d1">Transportistas homologados,</span>
+      <span class="fuerte sube d2">listos para entrar a mina</span>
+    </h1>
+    <p class="heroSub sube d3">Un solo legajo por transportista, validado con inteligencia artificial contra los requisitos de cada comprador. Sabes qué camión puede pasar la garita hoy, y cuál no, sin llamar a nadie.</p>
+    <div class="heroBtns sube d4">
+      <a class="cta grande" href="#cierre">Solicitar una demostración</a>
+      <a class="fantasma" href="#como">Ver cómo funciona</a>
+    </div>
+  </div>
+
+</header>
+
+<!-- ==================== DOS PÚBLICOS ==================== -->
+<div class="publicos" id="publicos">
+  <div class="wrap">
+    <div class="pgrid">
+
+      <div class="pcard">
+        <div class="k">Compradores</div>
+        <h2>Mineras, cementeras y refinerías</h2>
+        <p>Ve el estado de habilitación de toda tu flota contratada en una sola pantalla, unidad por unidad, actualizado al día.</p>
+        <ul>
+          <li>Qué camión puede entrar hoy y cuál está bloqueado</li>
+          <li>Qué documento vence en los próximos 30 días</li>
+          <li>Tus requisitos contractuales, no una plantilla genérica</li>
+        </ul>
+        <a class="mas" href="#como">Cómo funciona del lado comprador</a>
+      </div>
+
+      <div class="pcard">
+        <div class="k">Transportistas</div>
+        <h2>Empresas de carga pesada</h2>
+        <p>Levanta tu legajo una vez y úsalo con todos tus clientes. Sin volver a escanear lo mismo para cada minera.</p>
+        <ul>
+          <li>Un solo expediente de empresa, unidades y conductores</li>
+          <li>Aviso antes de que venza, no después</li>
+          <li>Subes por enlace, sin crear cuenta ni recordar contraseña</li>
+        </ul>
+        <a class="mas" href="#tesis">Por qué se homologa una sola vez</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CIFRAS ==================== -->
+<section class="cifras" id="cifras">
+  <div class="wrap">
+    <p class="rotulo">Por qué ahora</p>
+    <h2 class="titulo">El cumplimiento del transporte dejó de ser negociable</h2>
+    <div class="cgrid">
+      <div class="cf">
+        <div class="n">1 jul <small>2026</small></div>
+        <div class="e">Las sanciones de SUNAT por guía de remisión electrónica dejaron de ser discrecionales.</div>
+        <div class="f">Res. 000026-2025/700000 · verificado</div>
+      </div>
+      <div class="cf">
+        <div class="n">71<small>%</small></div>
+        <div class="e">Del empleo minero en el Perú está en empresas contratistas, no en la titular.</div>
+        <div class="f">189 087 de 265 332 · verificado</div>
+      </div>
+      <div class="cf">
+        <div class="n">52,1<small>%</small></div>
+        <div class="e">Del cobre del país sale de Arequipa, Cusco, Apurímac y Moquegua.</div>
+        <div class="f">Corredor sur · verificado</div>
+      </div>
+      <div class="cf">
+        <div class="n">2,64</div>
+        <div class="e">Camiones por empresa de transporte de carga en promedio. El proveedor típico es muy pequeño.</div>
+        <div class="f">Parque de carga nacional · verificado</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CÓMO FUNCIONA ==================== -->
+<section class="seccion oscura" id="como">
+  <div class="wrap">
+    <p class="rotulo">Cómo funciona</p>
+    <h2 class="titulo">Tres movimientos, sin cambiar tu proceso</h2>
+    <p class="entrada">No pedimos que tus transportistas aprendan un sistema nuevo. Reciben un enlace, suben el documento y el resto lo hace Trazza.</p>
+
+    <div class="pasos">
+      <div class="paso">
+        <div class="num">Paso 1</div>
+        <h3>Cargamos tu padrón</h3>
+        <p>Nos das la lista de transportistas contratados y los requisitos que hoy exiges. Nosotros armamos el expediente inicial; tu equipo no digita nada.</p>
+      </div>
+      <div class="paso">
+        <div class="num">Paso 2</div>
+        <h3>El transportista sube por enlace</h3>
+        <p>Le llega un enlace con los documentos que le faltan. Sube y listo. La IA lee el documento, extrae la vigencia y marca lo que no cuadra.</p>
+      </div>
+      <div class="paso">
+        <div class="num">Paso 3</div>
+        <h3>Ves el portón en vivo</h3>
+        <p>Una marca por unidad: verde pasa, roja no. Cada marca abre el detalle con el documento exacto que falta y desde cuándo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESIS ==================== -->
+<section class="seccion tesis" id="tesis">
+  <div class="wrap">
+    <div class="tgrid">
+      <div>
+        <p class="rotulo">La diferencia</p>
+        <h2 class="titulo">Se homologa una vez. Sirve para varios compradores.</h2>
+        <p class="entrada">Hoy el mismo transportista levanta el mismo legajo tres veces: para la minera, para la cementera y para la refinería. Buena parte de esos requisitos son estatutarios —valen igual ante cualquier comprador— y no tendrían por qué volver a levantarse.</p>
+        <p class="entrada" style="margin-top:16px">Trazza separa lo estatutario de lo contractual y reutiliza lo primero. Por eso el transportista entra: le ahorras trabajo, no se lo agregas.</p>
+      </div>
+
+      <div class="equiv">
+        <div class="h">Andina Carga Pesada E.I.R.L. · 15 requisitos</div>
+        <div class="fila">
+          <div class="nm">Minera Sur S.A.A.<span>15 exigidos · 8 estatutarios</span></div>
+          <span class="pill ok">Habilitado</span>
+        </div>
+        <div class="fila">
+          <div class="nm">Cementos del Sur<span>12 exigidos · 8 ya cubiertos</span></div>
+          <span class="pill ok">Habilitado</span>
+        </div>
+        <div class="fila">
+          <div class="nm">Refinería Ilo<span>14 exigidos · 8 ya cubiertos</span></div>
+          <span class="pill pv">Faltan 2</span>
+        </div>
+        <div class="resumen">Trabajo evitado al transportista: <b>8 de 15</b> requisitos no se vuelven a levantar por cada cliente nuevo.
+          <span class="marca-sup">[SUPUESTO — a validar con el primer comprador]</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CIERRE ==================== -->
+<section class="cierre" id="cierre">
+  <div class="wrap">
+    <p class="rotulo">Piloto</p>
+    <h2 class="titulo">60 días, 25 transportistas, dos números al final</h2>
+    <p>Cuántos documentos vencidos había que no sabías, y cuántas horas de tu equipo se fueron persiguiéndolos. Si al día 60 no te sirve, no sigue.</p>
+    <a class="cta grande" href="#" id="btnDemo">Solicitar una demostración</a>
+  </div>
+</section>
+
+<!-- ==================== PIE ==================== -->
+<footer class="pie">
+  <div class="wrap">
+    <div class="fl">
+      <a class="logo" href="#top"><span class="glifo"></span><span class="wordmark">Trazza</span></a>
+      <div>Arequipa, Perú · <b>hola@trazza.pe</b> <span style="opacity:.6">[correo de ejemplo]</span></div>
+    </div>
+    <p style="margin:0">
+      Ambiente de demostración. Ninguna razón social, RUC ni nombre de esta página corresponde a una empresa o persona real. <b>[FICTICIO]</b><br>
+      Las cifras de la sección «Por qué ahora» tienen fuente primaria documentada. La proporción «8 de 15» es una estimación propia marcada <b>[SUPUESTO]</b>.
+      La distinción entre requisito estatutario y contractual se apoya en un hallazgo verificado: el <b>D.S. 017-2009-MTC no contiene la palabra «fatiga»</b>, de modo que el plan de gestión de fatiga que exigen las mineras es contractual, no normativo.
+      El tratamiento de datos personales de conductores se rige por la <b>Ley N° 29733</b> <span style="opacity:.7">[verificar reglamento vigente antes de citar]</span>.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* nav que se solidifica al bajar */
+  var nav = document.getElementById("nav");
+  function alScroll(){
+    if(window.scrollY > 40) nav.classList.add("solido");
+    else nav.classList.remove("solido");
+  }
+  alScroll();
+  window.addEventListener("scroll", alScroll, {passive:true});
+
+  /* si hay foto definida, se muestra encima de la escena vectorial */
+  var foto = getComputedStyle(document.documentElement).getPropertyValue("--foto").trim();
+  if(foto && foto !== "none"){
+    document.documentElement.style.setProperty("--fotoDisplay","block");
+  }
+
+  /* menú compacto: abre y cierra el panel */
+  var hamb = document.getElementById("hamb");
+  var menu = document.getElementById("menu");
+  function menuAbierto(v){
+    menu.classList.toggle("abierto", v);
+    hamb.setAttribute("aria-expanded", v ? "true" : "false");
+    hamb.textContent = v ? "Cerrar" : "Menú";
+  }
+  hamb.addEventListener("click", function(){
+    menuAbierto(!menu.classList.contains("abierto"));
+  });
+  menu.addEventListener("click", function(e){
+    if(e.target.tagName === "A") menuAbierto(false);
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && menu.classList.contains("abierto")) menuAbierto(false);
+  });
+
+  /* acciones de demo */
+  function aviso(e){
+    e.preventDefault();
+    var t = document.createElement("div");
+    t.textContent = "Demo · aquí va el formulario de contacto o el ingreso al panel.";
+    t.style.cssText = "position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#12161C;color:#fff;padding:12px 18px;border-radius:10px;font:400 14.5px/1.4 var(--sans);box-shadow:0 18px 40px -16px rgba(0,0,0,.6);z-index:99;max-width:90vw";
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 3200);
+  }
+  document.getElementById("btnDemo").addEventListener("click", aviso);
+  document.getElementById("lnkEntrar").addEventListener("click", aviso);
+})();
+</script>
+</body>
+</html>

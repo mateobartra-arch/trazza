@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trazza — Portón de habilitación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,600;100,700;125,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   TRAZZA · sistema de diseño
+   Paleta derivada del material que se transporta: basalto (el sillar y la
+   roca del corredor sur), cobre (la carga) y cardenillo (el cobre oxidado).
+   No hay panel lateral. La navegación vive en el buscador de comandos (⌘K)
+   y en el propio contenido.
+   ========================================================================== */
+:root{
+  --basalt:#12161C; --basalt2:#1B2129; --basalt3:#2B3441; --basalt4:#3E4956;
+  --niebla:#EBEFF3; --papel:#FFFFFF;
+  --cobre:#C0703A; --cardenillo:#12897A; --ambar:#B8820F; --ocre:#A93529;
+  --tinta:#151A20; --tinta2:#59636F; --tinta3:#8B95A1; --linea:#D9DFE6;
+  --r:14px; --r2:8px;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --disp:"Archivo","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sombra:0 1px 2px rgba(18,22,28,.06),0 8px 24px -12px rgba(18,22,28,.18);
+  --sombra2:0 24px 64px -24px rgba(18,22,28,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--sans); color:var(--tinta); background:var(--niebla);
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3{margin:0; font-family:var(--disp); font-weight:700; letter-spacing:-.02em; line-height:1.08}
+p{margin:0}
+button{font:inherit; color:inherit; border:0; background:none; cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2.5px solid var(--cardenillo); outline-offset:3px; border-radius:4px}
+.mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- barra superior (reemplaza al panel lateral) ---------- */
+.topbar{
+  position:sticky; top:0; z-index:60;
+  background:var(--basalt); color:#E7ECF2;
+  display:flex; align-items:center; gap:14px;
+  padding:0 20px; height:60px;
+  border-bottom:1px solid #000;
+}
+.marca{display:flex; align-items:center; gap:9px; flex:0 0 auto}
+.marca .glifo{
+  width:26px;height:26px;border-radius:7px;flex:0 0 auto;
+  background:linear-gradient(150deg,var(--cobre),var(--cardenillo));
+  display:grid;place-items:center;
+}
+.marca .glifo i{display:block;width:9px;height:9px;border:2px solid #12161C;border-radius:2px;transform:rotate(45deg)}
+.marca b{font-family:var(--disp); font-weight:800; font-stretch:125%; letter-spacing:.02em; font-size:17px}
+.wschip{
+  display:flex;align-items:center;gap:8px;
+  background:var(--basalt2); border:1px solid var(--basalt3);
+  border-radius:999px; padding:6px 12px 6px 8px; font-size:13px; color:#C6D0DB;
+}
+.wschip .pt{width:20px;height:20px;border-radius:6px;background:var(--basalt4);display:grid;place-items:center;font-size:10px;font-weight:700;color:#E7ECF2;font-family:var(--disp)}
+.wschip:hover{border-color:var(--basalt4)}
+.wschip .cv{opacity:.55;font-size:11px}
+.buscar{
+  flex:1 1 auto; max-width:520px; margin:0 auto;
+  display:flex; align-items:center; gap:10px;
+  background:var(--basalt2); border:1px solid var(--basalt3);
+  border-radius:10px; padding:8px 10px; color:#9AA6B4; font-size:13.5px;
+  text-align:left; transition:border-color .16s,background .16s;
+}
+.buscar:hover{background:#212833; border-color:var(--basalt4)}
+.buscar .lupa{width:15px;height:15px;flex:0 0 auto;opacity:.8}
+.buscar span{flex:1 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.kbd{
+  font-family:var(--mono); font-size:11px; padding:2px 6px; border-radius:5px;
+  background:#0C1015; border:1px solid var(--basalt3); color:#8592A2; flex:0 0 auto;
+}
+.tb-der{display:flex;align-items:center;gap:10px;flex:0 0 auto;margin-left:auto}
+.campana{position:relative;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:#AEBACA}
+.campana:hover{background:var(--basalt2)}
+.campana em{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--cobre);box-shadow:0 0 0 2px var(--basalt)}
+.avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(160deg,#3E4956,#232B35);
+  border:1px solid var(--basalt4);
+  display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:12px;color:#DDE4EC;
+}
+
+/* ---------- lienzo ---------- */
+.lienzo{max-width:1180px;margin:0 auto;padding:0 20px 42px}
+
+/* ---------- HÉROE: el portón ---------- */
+.porton{
+  background:var(--basalt); color:#EEF2F6; border-radius:0 0 var(--r) var(--r);
+  padding:30px 26px 26px; margin-bottom:26px;
+  position:relative; overflow:hidden;
+}
+.porton::after{
+  content:""; position:absolute; inset:auto 0 0 0; height:3px;
+  background:linear-gradient(90deg,var(--cardenillo) 0 70%,var(--ambar) 70% 87%,var(--ocre) 87% 100%);
+  opacity:.9;
+}
+.fecha{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:#7E8B9A; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+}
+.fecha .vivo{display:inline-flex;align-items:center;gap:6px;color:#8FD8CB}
+.fecha .vivo i{width:6px;height:6px;border-radius:50%;background:var(--cardenillo);animation:lat 2.4s ease-in-out infinite}
+@keyframes lat{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+.porton h1{
+  font-size:clamp(28px,4.4vw,46px); font-stretch:125%; font-weight:800;
+  margin:12px 0 6px; color:#F4F7FA;
+}
+.porton h1 .num{color:var(--cardenillo)}
+.porton h1 .num.mal{color:var(--cobre)}
+.porton .bajada{color:#9DAAB9; font-size:15px; max-width:62ch}
+
+/* la barra del portón: una marca por unidad real */
+.barra{margin-top:22px}
+.barra .rejilla{
+  display:flex; gap:3px; align-items:flex-end; flex-wrap:wrap;
+}
+.tick{
+  width:14px; height:38px; border-radius:3px; border:0; padding:0;
+  background:var(--basalt3); position:relative; cursor:pointer;
+  transform-origin:bottom center;
+  transition:transform .14s cubic-bezier(.2,.9,.3,1.3), filter .14s;
+}
+.tick[data-e="ok"]{background:var(--cardenillo)}
+.tick[data-e="pv"]{background:var(--ambar)}
+.tick[data-e="bl"]{background:var(--ocre)}
+.tick[data-e="rv"]{background:var(--basalt4)}
+.tick:hover,.tick:focus-visible{transform:scaleY(1.28); filter:brightness(1.25); z-index:2}
+.tick.sube{animation:sube .42s cubic-bezier(.2,.9,.3,1.15) backwards}
+@keyframes sube{from{transform:scaleY(.06);opacity:.2}to{transform:scaleY(1);opacity:1}}
+.leyenda{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:#9DAAB9}
+.leyenda b{color:#EEF2F6;font-family:var(--mono);font-weight:600}
+.leyenda i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:7px;vertical-align:baseline}
+.leyenda .l-ok i{background:var(--cardenillo)} .leyenda .l-pv i{background:var(--ambar)}
+.leyenda .l-bl i{background:var(--ocre)} .leyenda .l-rv i{background:var(--basalt4)}
+.pista{margin-top:14px;font-size:12.5px;color:#6F7C8B}
+
+/* ---------- filtro de flujo ---------- */
+.flujo{
+  display:flex; gap:6px; flex-wrap:wrap; margin:0 0 18px;
+  background:var(--papel); border:1px solid var(--linea); border-radius:12px; padding:6px;
+  box-shadow:var(--sombra);
+}
+.fbtn{
+  padding:8px 14px; border-radius:8px; font-size:13.5px; font-weight:500; color:var(--tinta2);
+  display:flex; align-items:center; gap:8px; transition:background .14s,color .14s;
+}
+.fbtn:hover{background:var(--niebla)}
+.fbtn[aria-pressed="true"]{background:var(--basalt); color:#F1F5F9}
+.fbtn .n{font-family:var(--mono);font-size:11.5px;padding:1px 6px;border-radius:5px;background:var(--niebla);color:var(--tinta2)}
+.fbtn[aria-pressed="true"] .n{background:var(--basalt3);color:#CBD5E1}
+
+/* ---------- tarjetas de transportista ---------- */
+.rejilla-t{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:14px}
+.tarj{
+  background:var(--papel); border:1px solid var(--linea); border-radius:var(--r);
+  padding:16px 16px 14px; text-align:left; width:100%;
+  box-shadow:var(--sombra); transition:transform .16s,box-shadow .16s,border-color .16s;
+  display:flex; flex-direction:column; gap:12px;
+}
+.tarj:hover{transform:translateY(-3px); box-shadow:var(--sombra2); border-color:#BFC9D4}
+.tarj-top{display:flex;align-items:flex-start;gap:11px}
+.logo{
+  width:38px;height:38px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+  font-family:var(--disp);font-weight:800;font-size:14px;color:var(--papel);
+}
+.tarj h3{font-size:15.5px;font-weight:700;letter-spacing:-.01em;font-family:var(--sans)}
+.ruc{font-family:var(--mono);font-size:11.5px;color:var(--tinta3);margin-top:2px}
+.sello{
+  margin-left:auto;flex:0 0 auto;font-size:11px;font-weight:600;letter-spacing:.03em;
+  padding:4px 9px;border-radius:999px;text-transform:uppercase;
+}
+.s-ok{background:#E3F3F0;color:#0B6B5F} .s-pv{background:#FAF0DA;color:#7C5806}
+.s-bl{background:#F9E5E3;color:#8A2A20} .s-rv{background:#E9EDF2;color:#4B5663}
+.medidor{display:flex;gap:2px;height:6px;border-radius:3px;overflow:hidden;background:var(--niebla)}
+.medidor i{display:block;height:100%}
+.tarj-pie{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--tinta2)}
+.tarj-pie .dato{font-family:var(--mono);color:var(--tinta)}
+.alerta{
+  display:flex;align-items:center;gap:8px;font-size:12.5px;
+  padding:8px 10px;border-radius:var(--r2);
+}
+.a-pv{background:#FDF6E6;color:#7C5806} .a-bl{background:#FCEDEB;color:#8A2A20}
+.a-ok{background:#EAF5F3;color:#0B6B5F}
+.alerta .pl{font-family:var(--mono);font-weight:600}
+
+/* ---------- vencimientos ---------- */
+.bloque{margin-top:34px}
+.bloque-cab{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.bloque-cab h2{font-size:20px;font-stretch:125%;font-weight:700}
+.bloque-cab .nota{font-size:13px;color:var(--tinta2)}
+.linea-t{
+  background:var(--papel);border:1px solid var(--linea);border-radius:var(--r);
+  padding:18px 18px 12px;box-shadow:var(--sombra);overflow-x:auto;
+}
+.lt-fila{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #EDF1F5}
+.lt-fila:last-child{border-bottom:0}
+.lt-et{flex:0 0 248px;font-size:13.5px;display:flex;align-items:center;gap:8px;min-width:0}
+.lt-et b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lt-pista{flex:1 1 auto;height:22px;position:relative;background:linear-gradient(90deg,#F3F6F9,#F8FAFC);border-radius:6px;min-width:220px}
+.lt-pista::before,.lt-pista::after{content:"";position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--linea)}
+.lt-pista::before{left:33.3%} .lt-pista::after{left:66.6%}
+.lt-marca{
+  position:absolute;top:3px;height:16px;border-radius:4px;min-width:5px;
+  display:flex;align-items:center;padding:0 5px;font-family:var(--mono);font-size:10px;color:#fff;font-weight:600;white-space:nowrap;
+}
+.m-bl{background:var(--ocre)} .m-pv{background:var(--ambar)} .m-ok{background:var(--cardenillo)}
+.lt-esc{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--tinta3);margin-top:8px;padding-left:260px;letter-spacing:.06em}
+
+/* ---------- cajón lateral (detalle) ---------- */
+.velo{
+  position:fixed;inset:0;background:rgba(14,18,24,.42);backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .22s;z-index:70;
+}
+.velo.on{opacity:1;pointer-events:auto}
+.cajon{
+  position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);
+  background:var(--papel);z-index:80;box-shadow:-24px 0 64px -24px rgba(18,22,28,.5);
+  transform:translateX(103%);transition:transform .26s cubic-bezier(.3,.8,.3,1);
+  display:flex;flex-direction:column;
+}
+.cajon.on{transform:translateX(0)}
+.cajon-cab{padding:20px 22px 16px;border-bottom:1px solid var(--linea);background:var(--basalt);color:#EDF1F6}
+.cajon-cab .fila1{display:flex;align-items:flex-start;gap:12px}
+.cajon-cab h2{font-size:19px;font-family:var(--sans);font-weight:700;letter-spacing:-.01em}
+.cajon-cab .ruc{color:#8C99A8}
+.cerrar{margin-left:auto;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#AEBACA;flex:0 0 auto}
+.cerrar:hover{background:var(--basalt2);color:#fff}
+.cajon-cuerpo{flex:1 1 auto;overflow-y:auto;padding:20px 22px 32px}
+.cajon-pie{
+  padding:14px 22px;border-top:1px solid var(--linea);background:#FAFBFD;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.bt{padding:10px 16px;border-radius:9px;font-size:14px;font-weight:600;transition:background .14s,transform .1s}
+.bt:active{transform:translateY(1px)}
+.bt-1{background:var(--basalt);color:#fff} .bt-1:hover{background:#232C37}
+.bt-2{background:var(--papel);color:var(--tinta);border:1px solid var(--linea)} .bt-2:hover{background:var(--niebla)}
+.cajon-pie .aviso{font-size:12px;color:var(--tinta3);margin-left:auto}
+
+.grupo{margin-bottom:22px}
+.grupo-cab{
+  display:flex;align-items:center;gap:10px;margin-bottom:9px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--tinta3);
+}
+.grupo-cab .raya{flex:1 1 auto;height:1px;background:var(--linea)}
+.req{
+  display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:var(--r2);
+  border:1px solid var(--linea);margin-bottom:6px;background:var(--papel);
+}
+.req .pin{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.p-ok{background:var(--cardenillo)} .p-pv{background:var(--ambar)}
+.p-bl{background:var(--ocre)} .p-rv{background:#B6BFCA}
+.req .txt{flex:1 1 auto;min-width:0}
+.req .txt b{display:block;font-weight:500;font-size:13.5px}
+.req .txt small{color:var(--tinta3);font-size:11.5px}
+.req .cnt{font-family:var(--mono);font-size:12px;font-weight:600;flex:0 0 auto;white-space:nowrap}
+.c-ok{color:var(--cardenillo)} .c-pv{color:var(--ambar)} .c-bl{color:var(--ocre)} .c-rv{color:var(--tinta3)}
+.natura{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 5px;border-radius:4px;flex:0 0 auto;
+}
+.n-est{background:#E9EDF2;color:#4B5663} .n-con{background:#F6EDE6;color:#8A5528}
+
+/* matriz de equivalencias */
+.equiv{background:#F7F9FB;border:1px solid var(--linea);border-radius:var(--r);padding:15px 16px}
+.equiv h4{margin:0 0 4px;font-size:14px;font-family:var(--sans);font-weight:700}
+.equiv .sub{font-size:12.5px;color:var(--tinta2);margin-bottom:12px}
+.eq-fila{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #E6EBF1;font-size:13.5px}
+.eq-fila:first-of-type{border-top:0}
+.eq-fila .cli{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eq-est{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:999px;flex:0 0 auto}
+.marcador{
+  margin-top:12px;padding:10px 12px;border-radius:var(--r2);background:#EAF5F3;color:#0B6B5F;font-size:12.5px;
+}
+.marcador b{font-family:var(--mono)}
+
+/* ---------- paleta de comandos ---------- */
+.pal-velo{
+  position:fixed;inset:0;background:rgba(12,16,21,.5);backdrop-filter:blur(3px);
+  z-index:90;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;
+}
+.pal-velo.on{display:flex}
+.pal{
+  width:min(620px,100%);background:var(--papel);border-radius:var(--r);
+  box-shadow:0 32px 80px -20px rgba(10,14,19,.6);overflow:hidden;display:flex;flex-direction:column;
+  max-height:70vh;animation:pal .16s ease-out;
+}
+@keyframes pal{from{opacity:0;transform:translateY(-10px) scale(.985)}to{opacity:1;transform:none}}
+.pal-in{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--linea)}
+.pal-in input{
+  flex:1 1 auto;border:0;outline:0;font-size:16.5px;font-family:var(--sans);background:transparent;color:var(--tinta);
+}
+.pal-in input::placeholder{color:var(--tinta3)}
+.pal-lista{overflow-y:auto;padding:8px}
+.pal-gr{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--tinta3);padding:10px 10px 6px}
+.pal-it{
+  display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px;width:100%;text-align:left;
+}
+.pal-it[data-sel="1"]{background:var(--niebla)}
+.pal-it .ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto;font-family:var(--mono);font-size:11px;font-weight:600;background:var(--niebla);color:var(--tinta2)}
+.pal-it .pr{flex:1 1 auto;min-width:0}
+.pal-it .pr b{display:block;font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pal-it .pr small{color:var(--tinta3);font-size:11.5px}
+.pal-it .fl{font-family:var(--mono);font-size:11px;color:var(--tinta3);flex:0 0 auto}
+.pal-vacio{padding:34px 18px;text-align:center;color:var(--tinta2);font-size:14px}
+.pal-pie{
+  padding:10px 16px;border-top:1px solid var(--linea);background:#FAFBFD;
+  display:flex;gap:16px;font-size:11.5px;color:var(--tinta3);flex-wrap:wrap;
+}
+.pal-pie span{display:flex;align-items:center;gap:6px}
+.pal-pie .k{font-family:var(--mono);font-size:10.5px;padding:1px 5px;border:1px solid var(--linea);border-radius:4px;background:var(--papel)}
+
+/* ---------- aviso ---------- */
+.toast{
+  position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);
+  background:var(--basalt);color:#EDF1F6;padding:11px 18px;border-radius:10px;
+  font-size:13.5px;box-shadow:var(--sombra2);opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;z-index:95;display:flex;align-items:center;gap:10px;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast i{width:7px;height:7px;border-radius:50%;background:var(--cardenillo);flex:0 0 auto}
+
+/* ---------- pie ---------- */
+.pie{
+  max-width:1180px;margin:44px auto 0;padding:22px 20px 40px;border-top:1px solid var(--linea);
+  font-size:12.5px;color:var(--tinta2);
+}
+.pie b{color:var(--tinta)}
+.pie .fila{margin-bottom:10px}
+.pie code{font-family:var(--mono);font-size:11.5px;background:#E2E8EF;padding:1px 5px;border-radius:4px;color:var(--tinta)}
+
+/* ---------- responsive ---------- */
+@media (max-width:860px){
+  .buscar{max-width:none;margin:0}
+  .wschip{display:none}
+  .lt-et{flex:0 0 130px}
+  .lt-esc{padding-left:142px}
+}
+@media (max-width:620px){
+  .topbar{padding:0 12px;gap:8px}
+  .buscar span{display:none}
+  .buscar{flex:0 0 auto;max-width:44px;justify-content:center;padding:8px}
+  .buscar .kbd{display:none}
+  .lienzo{padding:0 12px 80px}
+  .porton{padding:22px 16px 20px;border-radius:0}
+  .rejilla-t{grid-template-columns:1fr}
+  .lt-et{flex:0 0 108px;font-size:12px}
+  .lt-esc{padding-left:120px}
+  .cajon{width:100%}
+  .tick{width:11px;height:32px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .tick.sube{animation:none}
+}
+@media print{
+  .topbar,.pal-velo,.velo,.cajon,.toast,.flujo{display:none!important}
+  body{background:#fff}
+  .porton{background:#fff;color:#000;border:1px solid #000}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="marca"><span class="glifo"><i></i></span><b>TRAZZA</b></div>
+  <button class="wschip" id="btnWs" type="button">
+    <span class="pt">MS</span><span>Minera Sur S.A.A.</span><span class="cv">▾</span>
+  </button>
+  <button class="buscar" id="btnBuscar" type="button" aria-label="Buscar placa, RUC, conductor o acción">
+    <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+    <span>Buscar placa, RUC, conductor o acción…</span>
+    <span class="kbd">⌘K</span>
+  </button>
+  <div class="tb-der">
+    <button class="campana" type="button" aria-label="Avisos" id="btnAvisos">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      <em></em>
+    </button>
+    <div class="avatar" title="Sesión demo">MB</div>
+  </div>
+</header>
+
+<main class="lienzo">
+
+  <!-- ====== HÉROE: EL PORTÓN ====== -->
+  <section class="porton" aria-labelledby="tit-porton">
+    <div class="fecha">
+      <span id="fechaHoy">Martes 28 de julio de 2026 · 06:40</span>
+      <span class="vivo"><i></i>Sincronizado hace 4 min</span>
+    </div>
+    <h1 id="tit-porton"><span class="num" id="hOk">35</span> de <span id="hTot">54</span> unidades pueden cargar hoy. <span class="num mal" id="hMal">19</span> no.</h1>
+    <p class="bajada">Cada marca es una unidad declarada por tus transportistas. El color es su estado de habilitación en este momento, no el del último informe. Haz clic en cualquier marca para ver qué le falta.</p>
+
+    <div class="barra">
+      <div class="rejilla" id="rejilla" role="list" aria-label="Estado de habilitación por unidad"></div>
+      <div class="leyenda">
+        <span class="l-ok"><i></i>Habilitada <b id="lgOk">35</b></span>
+        <span class="l-pv"><i></i>Vence en ≤30 días <b id="lgPv">9</b></span>
+        <span class="l-bl"><i></i>Bloqueada <b id="lgBl">5</b></span>
+        <span class="l-rv"><i></i>En revisión <b id="lgRv">5</b></span>
+      </div>
+      <p class="pista">Pulsa <span class="kbd" style="background:#0C1015">⌘K</span> para buscar una placa o ejecutar una acción. No hay menú lateral: todo está a dos teclas.</p>
+    </div>
+  </section>
+
+  <!-- ====== FLUJO ====== -->
+  <div class="flujo" role="group" aria-label="Filtrar transportistas por estado">
+    <button class="fbtn" type="button" data-f="todos" aria-pressed="true">Todos <span class="n" id="nTodos">6</span></button>
+    <button class="fbtn" type="button" data-f="bl" aria-pressed="false">Bloqueados <span class="n" id="nBl">1</span></button>
+    <button class="fbtn" type="button" data-f="pv" aria-pressed="false">Por vencer <span class="n" id="nPv">2</span></button>
+    <button class="fbtn" type="button" data-f="ok" aria-pressed="false">Habilitados <span class="n" id="nOk">2</span></button>
+    <button class="fbtn" type="button" data-f="rv" aria-pressed="false">En revisión <span class="n" id="nRv">1</span></button>
+  </div>
+
+  <div class="rejilla-t" id="rejillaT"></div>
+
+  <!-- ====== VENCIMIENTOS ====== -->
+  <section class="bloque" aria-labelledby="tit-venc">
+    <div class="bloque-cab">
+      <h2 id="tit-venc">Qué vence antes de que termine setiembre</h2>
+      <span class="nota">Ordenado por lo que primero deja una unidad fuera del portón.</span>
+    </div>
+    <div class="linea-t" id="lineaT"></div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <p class="fila"><b>Datos ficticios.</b> Ninguna cifra, placa, RUC, razón social ni nombre de conductor en esta demo corresponde a una empresa o persona real. Es un ambiente de demostración creado a propósito para mostrar el producto sin exponer información de un cliente. <b>[FICTICIO]</b></p>
+  <p class="fila"><b>Naturaleza de los requisitos.</b> Los marcados <span class="natura n-est">estatutario</span> nacen de norma (SUTRAN, MTC, SUNAT, SUNAFIL). Los marcados <span class="natura n-con">contractual</span> nacen del contrato con el comprador, no de la ley: el plan de gestión de fatiga es el caso típico — <b>D.S. 017-2009-MTC no contiene la palabra «fatiga»</b> (verificado por búsqueda en el texto del reglamento). Esa diferencia es precisamente lo que hace posible la matriz de equivalencias. <b>[VERIFICADO]</b></p>
+  <p class="fila"><b>Fecha regulatoria dura.</b> Desde el 1 de julio de 2026 las sanciones de SUNAT por guía de remisión electrónica dejaron de ser discrecionales (Res. de Superintendencia Nacional Adjunta N° 000026-2025/700000); para minerales metálicos la sanción es inmediata desde enero de 2025. <b>[VERIFICADO]</b></p>
+  <p class="fila"><b>Datos personales del conductor.</b> El tratamiento de DNI, licencia y exámenes médicos se rige por la Ley N° 29733; su reglamento fue actualizado después del corte de información disponible. <b>[VERIFICAR ANTES DE CITAR]</b></p>
+  <p class="fila"><b>Cómo se conecta con el motor.</b> El portón se alimenta de <code>TRAZZA.db.listar({coleccion:'unidades', modulo:'flota'})</code>; las tarjetas de <code>TRAZZA.db.listar({coleccion:'proveedores'})</code>; el detalle de requisitos de <code>TRAZZA.db.listar({coleccion:'documentos', extra:q=&gt;q.where('proveedorId','==',id)})</code>. Las tres inyectan <code>empresaId</code> de forma obligatoria — ninguna pantalla puede saltarse el aislamiento entre clientes. Ver <code>trazza-db.js</code> y <code>firestore.rules</code> en el núcleo. <b>[SUPUESTO: nombres de colección finales por confirmar en la migración]</b></p>
+</footer>
+
+<!-- ====== CAJÓN DE DETALLE ====== -->
+<div class="velo" id="velo"></div>
+<aside class="cajon" id="cajon" role="dialog" aria-modal="true" aria-labelledby="cjTit" tabindex="-1">
+  <div class="cajon-cab">
+    <div class="fila1">
+      <div class="logo" id="cjLogo" style="background:#2B3441">TR</div>
+      <div style="min-width:0">
+        <h2 id="cjTit">Transportista</h2>
+        <div class="ruc" id="cjRuc">RUC —</div>
+      </div>
+      <button class="cerrar" id="cjX" type="button" aria-label="Cerrar detalle">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="cajon-cuerpo" id="cjCuerpo"></div>
+  <div class="cajon-pie">
+    <button class="bt bt-1" type="button" id="cjHab">Habilitar transportista</button>
+    <button class="bt bt-2" type="button" id="cjSol">Solicitar documento</button>
+    <span class="aviso">Demo · sin efectos reales</span>
+  </div>
+</aside>
+
+<!-- ====== PALETA DE COMANDOS ====== -->
+<div class="pal-velo" id="palVelo">
+  <div class="pal" role="dialog" aria-modal="true" aria-label="Buscar y ejecutar">
+    <div class="pal-in">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input id="palIn" type="text" placeholder="Placa, RUC, conductor o acción…" autocomplete="off" spellcheck="false" aria-label="Buscar">
+      <span class="kbd" style="background:#F3F6F9;border-color:#D9DFE6;color:#8B95A1">esc</span>
+    </div>
+    <div class="pal-lista" id="palLista"></div>
+    <div class="pal-pie">
+      <span><span class="k">↑↓</span> moverse</span>
+      <span><span class="k">↵</span> abrir</span>
+      <span><span class="k">esc</span> cerrar</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i></i><span id="toastTxt">Listo</span></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ==========================================================================
+   DATOS DE DEMOSTRACIÓN — 100% FICTICIOS
+   Ninguna razón social, RUC, placa o nombre corresponde a una entidad real.
+   En producción esta constante se reemplaza por TRAZZA.db.listar(...).
+   ========================================================================== */
+var HOY = new Date(2026, 6, 28); // 28 jul 2026
+
+function d(dias){ var x = new Date(HOY.getTime()); x.setDate(x.getDate()+dias); return x; }
+function fmt(x){
+  var m = ["ene","feb","mar","abr","may","jun","jul","ago","set","oct","nov","dic"];
+  return x.getDate() + " " + m[x.getMonth()] + " " + x.getFullYear();
+}
+
+var TRANSPORTISTAS = [
+  {
+    id:"t1", nom:"Transportes Chuquibamba S.A.C.", corto:"TCH", ruc:"20601384927", color:"#2B3441",
+    unidades:14, conductores:22, sede:"Arequipa", desde:"mar 2025",
+    estado:"bl",
+    req:[
+      {g:"Empresa", n:"Habilitación SUTRAN vigente (SUCTR)", nat:"est", e:"ok", v:412},
+      {g:"Empresa", n:"Póliza de responsabilidad civil ≥ US$ 1M", nat:"con", e:"bl", v:-9},
+      {g:"Empresa", n:"RUC activo y habido", nat:"est", e:"ok", v:365},
+      {g:"Empresa", n:"Plan de gestión de fatiga y somnolencia", nat:"con", e:"pv", v:18},
+      {g:"Empresa", n:"Homologación de proveedor vigente", nat:"con", e:"ok", v:196},
+      {g:"Vehículo", n:"SOAT de flota (14/14 unidades)", nat:"est", e:"ok", v:88},
+      {g:"Vehículo", n:"Revisión técnica vehicular (12/14)", nat:"est", e:"bl", v:-4},
+      {g:"Vehículo", n:"GPS con reporte cada 5 min", nat:"con", e:"ok", v:270},
+      {g:"Vehículo", n:"Certificado de operatividad de grúa/tolva", nat:"con", e:"rv", v:null},
+      {g:"Conductor", n:"Licencia A-IIIC vigente (22/22)", nat:"est", e:"ok", v:143},
+      {g:"Conductor", n:"Examen médico ocupacional (19/22)", nat:"est", e:"bl", v:-12},
+      {g:"Conductor", n:"Inducción de seguridad del comprador", nat:"con", e:"pv", v:21},
+      {g:"Conductor", n:"Récord de conductor sin infracciones graves", nat:"est", e:"ok", v:301},
+      {g:"Viaje", n:"Guía de remisión electrónica (GRE)", nat:"est", e:"ok", v:null},
+      {g:"Viaje", n:"Checklist previo al viaje firmado", nat:"con", e:"ok", v:null}
+    ],
+    equiv:[
+      {c:"Minera Sur S.A.A.", e:"bl", t:"3 requisitos vencidos"},
+      {c:"Cementos del Sur", e:"ok", t:"Cumple 11/11"},
+      {c:"Refinería Ilo (perfil tipo)", e:"pv", t:"2 requisitos más estrictos"}
+    ]
+  },
+  {
+    id:"t2", nom:"Andina Carga Pesada E.I.R.L.", corto:"ACP", ruc:"20455108372", color:"#12897A",
+    unidades:11, conductores:16, sede:"Arequipa", desde:"ene 2026",
+    estado:"pv",
+    req:[
+      {g:"Empresa", n:"Habilitación SUTRAN vigente (SUCTR)", nat:"est", e:"ok", v:530},
+      {g:"Empresa", n:"Póliza de responsabilidad civil ≥ US$ 1M", nat:"con", e:"pv", v:11},
+      {g:"Empresa", n:"RUC activo y habido", nat:"est", e:"ok", v:365},
+      {g:"Empresa", n:"Plan de gestión de fatiga y somnolencia", nat:"con", e:"ok", v:160},
+      {g:"Empresa", n:"Homologación de proveedor vigente", nat:"con", e:"pv", v:26},
+      {g:"Vehículo", n:"SOAT de flota (11/11 unidades)", nat:"est", e:"ok", v:207},
+      {g:"Vehículo", n:"Revisión técnica vehicular (11/11)", nat:"est", e:"ok", v:64},
+      {g:"Vehículo", n:"GPS con reporte cada 5 min", nat:"con", e:"ok", v:330},
+      {g:"Vehículo", n:"Certificado de operatividad de tolva", nat:"con", e:"ok", v:118},
+      {g:"Conductor", n:"Licencia A-IIIC vigente (16/16)", nat:"est", e:"ok", v:98},
+      {g:"Conductor", n:"Examen médico ocupacional (16/16)", nat:"est", e:"pv", v:24},
+      {g:"Conductor", n:"Inducción de seguridad del comprador", nat:"con", e:"ok", v:210},
+      {g:"Conductor", n:"Récord de conductor sin infracciones graves", nat:"est", e:"ok", v:365},
+      {g:"Viaje", n:"Guía de remisión electrónica (GRE)", nat:"est", e:"ok", v:null},
+      {g:"Viaje", n:"Checklist previo al viaje firmado", nat:"con", e:"ok", v:null}
+    ],
+    equiv:[
+      {c:"Minera Sur S.A.A.", e:"pv", t:"3 vencen en ≤30 días"},
+      {c:"Cementos del Sur", e:"ok", t:"Cumple 11/11"},
+      {c:"Refinería Ilo (perfil tipo)", e:"ok", t:"Cumple 13/13"}
+    ]
+  },
+  {
+    id:"t3", nom:"Ruta Majes Transportes S.A.C.", corto:"RMT", ruc:"20492287640", color:"#C0703A",
+    unidades:9, conductores:14, sede:"Camaná", desde:"abr 2026",
+    estado:"ok",
+    req:[
+      {g:"Empresa", n:"Habilitación SUTRAN vigente (SUCTR)", nat:"est", e:"ok", v:640},
+      {g:"Empresa", n:"Póliza de responsabilidad civil ≥ US$ 1M", nat:"con", e:"ok", v:203},
+      {g:"Empresa", n:"RUC activo y habido", nat:"est", e:"ok", v:365},
+      {g:"Empresa", n:"Plan de gestión de fatiga y somnolencia", nat:"con", e:"ok", v:289},
+      {g:"Empresa", n:"Homologación de proveedor vigente", nat:"con", e:"ok", v:312},
+      {g:"Vehículo", n:"SOAT de flota (9/9 unidades)", nat:"est", e:"ok", v:154},
+      {g:"Vehículo", n:"Revisión técnica vehicular (9/9)", nat:"est", e:"ok", v:171},
+      {g:"Vehículo", n:"GPS con reporte cada 5 min", nat:"con", e:"ok", v:298},
+      {g:"Vehículo", n:"Certificado de operatividad de tolva", nat:"con", e:"ok", v:245},
+      {g:"Conductor", n:"Licencia A-IIIC vigente (14/14)", nat:"est", e:"ok", v:222},
+      {g:"Conductor", n:"Examen médico ocupacional (14/14)", nat:"est", e:"ok", v:190},
+      {g:"Conductor", n:"Inducción de seguridad del comprador", nat:"con", e:"ok", v:158},
+      {g:"Conductor", n:"Récord de conductor sin infracciones graves", nat:"est", e:"ok", v:365},
+      {g:"Viaje", n:"Guía de remisión electrónica (GRE)", nat:"est", e:"ok", v:null},
+      {g:"Viaje", n:"Checklist previo al viaje firmado", nat:"con", e:"ok", v:null}
+    ],
+    equiv:[
+      {c:"Minera Sur S.A.A.", e:"ok", t:"Cumple 15/15"},
+      {c:"Cementos del Sur", e:"ok", t:"Cumple 11/11"},
+      {c:"Refinería Ilo (perfil tipo)", e:"pv", t:"2 requisitos más estrictos"}
+    ]
+  },
+  {
+    id:"t4", nom:"Cóndor Logística del Sur S.A.", corto:"CLS", ruc:"20518743029", color:"#3E4956",
+    unidades:12, conductores:19, sede:"Moquegua", desde:"nov 2025",
+    estado:"pv",
+    req:[
+      {g:"Empresa", n:"Habilitación SUTRAN vigente (SUCTR)", nat:"est", e:"ok", v:388},
+      {g:"Empresa", n:"Póliza de responsabilidad civil ≥ US$ 1M", nat:"con", e:"ok", v:96},
+      {g:"Empresa", n:"RUC activo y habido", nat:"est", e:"ok", v:365},
+      {g:"Empresa", n:"Plan de gestión de fatiga y somnolencia", nat:"con", e:"pv", v:7},
+      {g:"Empresa", n:"Homologación de proveedor vigente", nat:"con", e:"ok", v:141},
+      {g:"Vehículo", n:"SOAT de flota (12/12 unidades)", nat:"est", e:"ok", v:132},
+      {g:"Vehículo", n:"Revisión técnica vehicular (10/12)", nat:"est", e:"pv", v:15},
+      {g:"Vehículo", n:"GPS con reporte cada 5 min", nat:"con", e:"ok", v:256},
+      {g:"Vehículo", n:"Certificado de operatividad de tolva", nat:"con", e:"ok", v:88},
+      {g:"Conductor", n:"Licencia A-IIIC vigente (19/19)", nat:"est", e:"ok", v:176},
+      {g:"Conductor", n:"Examen médico ocupacional (19/19)", nat:"est", e:"ok", v:71},
+      {g:"Conductor", n:"Inducción de seguridad del comprador", nat:"con", e:"ok", v:184},
+      {g:"Conductor", n:"Récord de conductor sin infracciones graves", nat:"est", e:"ok", v:365},
+      {g:"Viaje", n:"Guía de remisión electrónica (GRE)", nat:"est", e:"ok", v:null},
+      {g:"Viaje", n:"Checklist previo al viaje firmado", nat:"con", e:"ok", v:null}
+    ],
+    equiv:[
+      {c:"Minera Sur S.A.A.", e:"pv", t:"2 vencen en ≤30 días"},
+      {c:"Cementos del Sur", e:"ok", t:"Cumple 11/11"},
+      {c:"Refinería Ilo (perfil tipo)", e:"ok", t:"Cumple 13/13"}
+    ]
+  },
+  {
+    id:"t5", nom:"Servicios Volcán Sillar S.R.L.", corto:"SVS", ruc:"20604911558", color:"#A93529",
+    unidades:5, conductores:8, sede:"Arequipa", desde:"jul 2026",
+    estado:"rv",
+    req:[
+      {g:"Empresa", n:"Habilitación SUTRAN vigente (SUCTR)", nat:"est", e:"ok", v:502},
+      {g:"Empresa", n:"Póliza de responsabilidad civil ≥ US$ 1M", nat:"con", e:"rv", v:null},
+      {g:"Empresa", n:"RUC activo y habido", nat:"est", e:"ok", v:365},
+      {g:"Empresa", n:"Plan de gestión de fatiga y somnolencia", nat:"con", e:"rv", v:null},
+      {g:"Empresa", n:"Homologación de proveedor vigente", nat:"con", e:"rv", v:null},
+      {g:"Vehículo", n:"SOAT de flota (5/5 unidades)", nat:"est", e:"ok", v:249},
+      {g:"Vehículo", n:"Revisión técnica vehicular (5/5)", nat:"est", e:"ok", v:112},
+      {g:"Vehículo", n:"GPS con reporte cada 5 min", nat:"con", e:"rv", v:null},
+      {g:"Vehículo", n:"Certificado de operatividad de tolva", nat:"con", e:"rv", v:null},
+      {g:"Conductor", n:"Licencia A-IIIC vigente (8/8)", nat:"est", e:"ok", v:264},
+      {g:"Conductor", n:"Examen médico ocupacional (6/8)", nat:"est", e:"rv", v:null},
+      {g:"Conductor", n:"Inducción de seguridad del comprador", nat:"con", e:"rv", v:null},
+      {g:"Conductor", n:"Récord de conductor sin infracciones graves", nat:"est", e:"ok", v:365},
+      {g:"Viaje", n:"Guía de remisión electrónica (GRE)", nat:"est", e:"rv", v:null},
+      {g:"Viaje", n:"Checklist previo al viaje firmado", nat:"con", e:"rv", v:null}
+    ],
+    equiv:[
+      {c:"Minera Sur S.A.A.", e:"rv", t:"Expediente en revisión"},
+      {c:"Cementos del Sur", e:"rv", t:"Sin postular"},
+      {c:"Refinería Ilo (perfil tipo)", e:"rv", t:"Sin postular"}
+    ]
+  },
+  {
+    id:"t6", nom:"Trans Colca Bulk Carriers S.A.C.", corto:"TCB", ruc:"20487205613", color:"#B8820F",
+    unidades:3, conductores:5, sede:"Cusco", desde:"jun 2026",
+    estado:"ok",
+    req:[
+      {g:"Empresa", n:"Habilitación SUTRAN vigente (SUCTR)", nat:"est", e:"ok", v:290},
+      {g:"Empresa", n:"Póliza de responsabilidad civil ≥ US$ 1M", nat:"con", e:"ok", v:167},
+      {g:"Empresa", n:"RUC activo y habido", nat:"est", e:"ok", v:365},
+      {g:"Empresa", n:"Plan de gestión de fatiga y somnolencia", nat:"con", e:"ok", v:230},
+      {g:"Empresa", n:"Homologación de proveedor vigente", nat:"con", e:"ok", v:274},
+      {g:"Vehículo", n:"SOAT de flota (3/3 unidades)", nat:"est", e:"ok", v:181},
+      {g:"Vehículo", n:"Revisión técnica vehicular (3/3)", nat:"est", e:"ok", v:206},
+      {g:"Vehículo", n:"GPS con reporte cada 5 min", nat:"con", e:"ok", v:311},
+      {g:"Vehículo", n:"Certificado de operatividad de tolva", nat:"con", e:"ok", v:199},
+      {g:"Conductor", n:"Licencia A-IIIC vigente (5/5)", nat:"est", e:"ok", v:253},
+      {g:"Conductor", n:"Examen médico ocupacional (5/5)", nat:"est", e:"ok", v:145},
+      {g:"Conductor", n:"Inducción de seguridad del comprador", nat:"con", e:"ok", v:129},
+      {g:"Conductor", n:"Récord de conductor sin infracciones graves", nat:"est", e:"ok", v:365},
+      {g:"Viaje", n:"Guía de remisión electrónica (GRE)", nat:"est", e:"ok", v:null},
+      {g:"Viaje", n:"Checklist previo al viaje firmado", nat:"con", e:"ok", v:null}
+    ],
+    equiv:[
+      {c:"Minera Sur S.A.A.", e:"ok", t:"Cumple 15/15"},
+      {c:"Cementos del Sur", e:"ok", t:"Cumple 11/11"},
+      {c:"Refinería Ilo (perfil tipo)", e:"ok", t:"Cumple 13/13"}
+    ]
+  }
+];
+
+/* placas ficticias por unidad */
+var LETRAS = ["A","B","C","D","F","P","T","U","V","W","X","Y","Z"];
+function placa(i){
+  // generador determinista (sin Math.random) para que la demo sea idéntica en cada apertura
+  var s = ((i + 13) * 2654435761) % 4294967296;
+  var a = LETRAS[Math.floor(s / 7) % LETRAS.length];
+  var b = LETRAS[(Math.floor(s / 131) + i*5) % LETRAS.length];
+  var c = LETRAS[(Math.floor(s / 977) + i*11) % LETRAS.length];
+  var n = 100 + ((i*173 + 41) % 900);
+  return a + b + c + "-" + n;
+}
+var CONDUCTORES = ["R. Quispe M.","J. Mamani C.","L. Ccahuana T.","A. Huamán P.","E. Choque V.",
+  "M. Apaza F.","S. Condori L.","D. Ticona R.","N. Cutipa S.","P. Vilca A.","G. Puma H.","C. Nina B."];
+
+/* deriva las unidades (54) desde los transportistas */
+var UNIDADES = [];
+(function(){
+  var k = 0;
+  for (var i=0;i<TRANSPORTISTAS.length;i++){
+    var t = TRANSPORTISTAS[i];
+    // reparto de estados por unidad, coherente con el estado del transportista
+    for (var u=0; u<t.unidades; u++){
+      var e = "ok";
+      if (t.estado === "bl"){ e = (u < 4) ? "bl" : (u < 7 ? "pv" : "ok"); }
+      else if (t.estado === "pv"){ e = (u < 3) ? "pv" : "ok"; }
+      else if (t.estado === "rv"){ e = "rv"; }
+      if (t.id === "t5" && u >= 3) e = "rv";
+      if (t.id === "t1" && u === 13) e = "bl";
+      UNIDADES.push({ id:"u"+k, placa:placa(k), t:t, e:e, cond:CONDUCTORES[k % CONDUCTORES.length] });
+      k++;
+    }
+  }
+})();
+
+var ETIQ = { ok:"Habilitada", pv:"Vence pronto", bl:"Bloqueada", rv:"En revisión" };
+var ETIQT = { ok:"Habilitado", pv:"Por vencer", bl:"Bloqueado", rv:"En revisión" };
+
+/* ---------- utilidades ---------- */
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+var toastT = null;
+function avisar(txt){
+  var el = $("#toast"); $("#toastTxt").textContent = txt;
+  el.classList.add("on");
+  if (toastT) clearTimeout(toastT);
+  toastT = setTimeout(function(){ el.classList.remove("on"); }, 2600);
+}
+
+/* ==========================================================================
+   1) EL PORTÓN
+   ========================================================================== */
+function pintarPorton(){
+  var cont = $("#rejilla");
+  var cta = { ok:0, pv:0, bl:0, rv:0 };
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var html = "";
+  for (var i=0;i<UNIDADES.length;i++){
+    var u = UNIDADES[i];
+    cta[u.e]++;
+    var t = "Unidad " + u.placa + " · " + u.t.corto + " · " + ETIQ[u.e];
+    html += '<button class="tick' + (reduce ? "" : " sube") + '" role="listitem" type="button" data-e="' + u.e +
+            '" data-u="' + u.id + '" data-t="' + u.t.id + '" title="' + esc(t) + '" aria-label="' + esc(t) + '"' +
+            (reduce ? "" : ' style="animation-delay:' + (i*11) + 'ms"') + '></button>';
+  }
+  cont.innerHTML = html;
+
+  $("#hOk").textContent = cta.ok;
+  $("#hTot").textContent = UNIDADES.length;
+  $("#hMal").textContent = (UNIDADES.length - cta.ok);
+  $("#lgOk").textContent = cta.ok;
+  $("#lgPv").textContent = cta.pv;
+  $("#lgBl").textContent = cta.bl;
+  $("#lgRv").textContent = cta.rv;
+
+  cont.addEventListener("click", function(ev){
+    var b = ev.target.closest(".tick");
+    if (!b) return;
+    abrirCajon(b.getAttribute("data-t"), b.getAttribute("data-u"));
+  });
+}
+
+/* ==========================================================================
+   2) TARJETAS
+   ========================================================================== */
+var filtro = "todos";
+
+function conteoReq(t){
+  var c = { ok:0, pv:0, bl:0, rv:0 };
+  for (var i=0;i<t.req.length;i++) c[t.req[i].e]++;
+  return c;
+}
+
+function pintarTarjetas(){
+  var cont = $("#rejillaT");
+  var html = "";
+  var vis = 0;
+  for (var i=0;i<TRANSPORTISTAS.length;i++){
+    var t = TRANSPORTISTAS[i];
+    if (filtro !== "todos" && t.estado !== filtro) continue;
+    vis++;
+    var c = conteoReq(t);
+    var tot = t.req.length;
+    var barras = "";
+    var ord = [["ok","var(--cardenillo)"],["pv","var(--ambar)"],["bl","var(--ocre)"],["rv","#B6BFCA"]];
+    for (var j=0;j<ord.length;j++){
+      if (c[ord[j][0]] > 0) barras += '<i style="width:' + (c[ord[j][0]]/tot*100) + '%;background:' + ord[j][1] + '"></i>';
+    }
+    var al = "", alc = "";
+    if (t.estado === "bl"){ alc = "a-bl"; al = '<span class="pl">' + c.bl + ' requisitos vencidos</span> — no puede cargar'; }
+    else if (t.estado === "pv"){ alc = "a-pv"; al = '<span class="pl">' + c.pv + ' vencen en ≤30 días</span> — avísale ahora'; }
+    else if (t.estado === "rv"){ alc = "a-rv"; al = 'Expediente en revisión desde el ' + fmt(d(-6)); }
+    else { alc = "a-ok"; al = 'Cumple <span class="pl">' + c.ok + '/' + tot + '</span> — puede cargar hoy'; }
+    if (t.estado === "rv") alc = "alerta";
+
+    html += '<button class="tarj" type="button" data-t="' + t.id + '">' +
+      '<div class="tarj-top">' +
+        '<span class="logo" style="background:' + t.color + '">' + esc(t.corto) + '</span>' +
+        '<div style="min-width:0"><h3>' + esc(t.nom) + '</h3><div class="ruc">RUC ' + esc(t.ruc) + ' · ' + esc(t.sede) + '</div></div>' +
+        '<span class="sello s-' + t.estado + '">' + ETIQT[t.estado] + '</span>' +
+      '</div>' +
+      '<div class="medidor" aria-hidden="true">' + barras + '</div>' +
+      '<div class="alerta ' + (t.estado === "rv" ? "" : alc) + '" style="' + (t.estado === "rv" ? "background:#EEF1F5;color:#4B5663" : "") + '">' + al + '</div>' +
+      '<div class="tarj-pie">' +
+        '<span><span class="dato">' + t.unidades + '</span> unidades · <span class="dato">' + t.conductores + '</span> conductores</span>' +
+        '<span>desde ' + esc(t.desde) + '</span>' +
+      '</div>' +
+    '</button>';
+  }
+  if (vis === 0){
+    html = '<div class="linea-t" style="grid-column:1/-1;text-align:center;padding:38px 18px">' +
+           '<p style="font-weight:600;margin-bottom:4px">Ningún transportista en este estado.</p>' +
+           '<p style="color:#59636F;font-size:13.5px">El portón está libre por este lado. Cambia el filtro para ver el resto.</p></div>';
+  }
+  cont.innerHTML = html;
+}
+
+$("#rejillaT").addEventListener("click", function(ev){
+  var b = ev.target.closest(".tarj");
+  if (b) abrirCajon(b.getAttribute("data-t"), null);
+});
+
+/* contadores del filtro */
+(function(){
+  var c = { bl:0, pv:0, ok:0, rv:0 };
+  for (var i=0;i<TRANSPORTISTAS.length;i++) c[TRANSPORTISTAS[i].estado]++;
+  $("#nTodos").textContent = TRANSPORTISTAS.length;
+  $("#nBl").textContent = c.bl; $("#nPv").textContent = c.pv;
+  $("#nOk").textContent = c.ok; $("#nRv").textContent = c.rv;
+})();
+
+var fbtns = document.querySelectorAll(".fbtn");
+for (var fi=0; fi<fbtns.length; fi++){
+  fbtns[fi].addEventListener("click", function(){
+    for (var k=0;k<fbtns.length;k++) fbtns[k].setAttribute("aria-pressed","false");
+    this.setAttribute("aria-pressed","true");
+    filtro = this.getAttribute("data-f");
+    pintarTarjetas();
+  });
+}
+
+/* ==========================================================================
+   3) VENCIMIENTOS — línea de 90 días, dibujada a mano (sin librerías)
+   ========================================================================== */
+function pintarVencimientos(){
+  var items = [];
+  for (var i=0;i<TRANSPORTISTAS.length;i++){
+    var t = TRANSPORTISTAS[i];
+    for (var j=0;j<t.req.length;j++){
+      var r = t.req[j];
+      if (r.v === null) continue;
+      if (r.v <= 62) items.push({ t:t, r:r });
+    }
+  }
+  items.sort(function(a,b){ return a.r.v - b.r.v; });
+  items = items.slice(0, 10);
+
+  var html = "";
+  for (var k=0;k<items.length;k++){
+    var it = items[k], v = it.r.v;
+    var cls = v < 0 ? "m-bl" : (v <= 30 ? "m-pv" : "m-ok");
+    // escala: -30 d .. +60 d  => 0..100%
+    var pos = Math.max(0, Math.min(100, ((v + 30) / 90) * 100));
+    var txt = (v < 0 ? ("vencido " + Math.abs(v) + " d") : ("en " + v + " d"));
+    var izq = pos > 68 ? "auto" : pos + "%";
+    var der = pos > 68 ? (100 - pos) + "%" : "auto";
+    html += '<div class="lt-fila">' +
+      '<div class="lt-et"><span class="logo" style="width:18px;height:18px;border-radius:5px;font-size:8px;background:' + it.t.color + '">' + esc(it.t.corto) + '</span>' +
+      '<b title="' + esc(it.r.n) + '">' + esc(it.r.n.replace(/\s*\([^)]*\)\s*$/, "")) + '</b></div>' +
+      '<div class="lt-pista"><span class="lt-marca ' + cls + '" style="left:' + izq + ';right:' + der + '">' + txt + '</span></div>' +
+    '</div>';
+  }
+  html += '<div class="lt-esc"><span>hace 30 d</span><span>hoy</span><span>+30 d</span><span>+60 d</span></div>';
+  $("#lineaT").innerHTML = html;
+}
+
+/* ==========================================================================
+   4) CAJÓN DE DETALLE
+   ========================================================================== */
+var ultimoFoco = null;
+
+function abrirCajon(tid, uid){
+  var t = null;
+  for (var i=0;i<TRANSPORTISTAS.length;i++) if (TRANSPORTISTAS[i].id === tid) t = TRANSPORTISTAS[i];
+  if (!t) return;
+  ultimoFoco = document.activeElement;
+
+  $("#cjTit").textContent = t.nom;
+  $("#cjRuc").textContent = "RUC " + t.ruc + " · " + t.sede + " · " + t.unidades + " unidades · " + t.conductores + " conductores";
+  var lg = $("#cjLogo"); lg.textContent = t.corto; lg.style.background = t.color;
+
+  var grupos = ["Empresa","Vehículo","Conductor","Viaje"];
+  var html = "";
+
+  if (uid){
+    var un = null;
+    for (var z=0;z<UNIDADES.length;z++) if (UNIDADES[z].id === uid) un = UNIDADES[z];
+    if (un){
+      html += '<div class="marcador" style="background:#F1F4F8;color:#3E4956;margin:0 0 18px">' +
+              'Entraste por la unidad <b>' + esc(un.placa) + '</b>, conductor asignado <b>' + esc(un.cond) + '</b> ' +
+              '— su estado depende de lo que le falta a la empresa, no solo al camión.</div>';
+    }
+  }
+
+  for (var g=0; g<grupos.length; g++){
+    var gn = grupos[g], filas = "";
+    for (var r=0; r<t.req.length; r++){
+      var q = t.req[r];
+      if (q.g !== gn) continue;
+      var cnt = "—", ccls = "c-rv";
+      if (q.e === "rv"){ cnt = "sin dato"; ccls = "c-rv"; }
+      else if (q.v === null){ cnt = "por viaje"; ccls = "c-ok"; }
+      else if (q.v < 0){ cnt = "vencido " + Math.abs(q.v) + " d"; ccls = "c-bl"; }
+      else if (q.v <= 30){ cnt = "vence en " + q.v + " d"; ccls = "c-pv"; }
+      else { cnt = "vigente " + q.v + " d"; ccls = "c-ok"; }
+      var sub = (q.v !== null && q.e !== "rv") ? ("Vence el " + fmt(d(q.v))) : (q.e === "rv" ? "Documento no presentado" : "Se valida en cada despacho");
+      filas += '<div class="req">' +
+        '<span class="pin p-' + q.e + '"></span>' +
+        '<span class="txt"><b>' + esc(q.n) + '</b><small>' + esc(sub) + '</small></span>' +
+        '<span class="natura n-' + q.nat + '">' + (q.nat === "est" ? "estatutario" : "contractual") + '</span>' +
+        '<span class="cnt ' + ccls + '">' + cnt + '</span>' +
+      '</div>';
+    }
+    html += '<div class="grupo"><div class="grupo-cab">' + gn + '<span class="raya"></span></div>' + filas + '</div>';
+  }
+
+  /* matriz de equivalencias */
+  var eq = "";
+  for (var e=0;e<t.equiv.length;e++){
+    var x = t.equiv[e];
+    var bg = x.e === "ok" ? "background:#E3F3F0;color:#0B6B5F" :
+             x.e === "pv" ? "background:#FAF0DA;color:#7C5806" :
+             x.e === "bl" ? "background:#F9E5E3;color:#8A2A20" : "background:#E9EDF2;color:#4B5663";
+    eq += '<div class="eq-fila"><span class="cli">' + esc(x.c) + '</span><span class="eq-est" style="' + bg + '">' + esc(x.t) + '</span></div>';
+  }
+  var reut = 0, tot = t.req.length;
+  for (var y=0;y<t.req.length;y++) if (t.req[y].nat === "est") reut++;
+  html += '<div class="equiv"><h4>Se homologa una vez. Sirve para varios compradores.</h4>' +
+    '<p class="sub">De los ' + tot + ' requisitos de este perfil, <b>' + reut + ' son estatutarios</b> y valen igual ante cualquier comprador. ' +
+    'Los demás son contractuales y cambian de cliente a cliente: ahí es donde la equivalencia ahorra trabajo.</p>' + eq +
+    '<div class="marcador">Trabajo evitado al transportista: <b>' + reut + ' de ' + tot + '</b> requisitos no se vuelven a levantar por cada cliente nuevo. <b>[SUPUESTO — a validar con el primer comprador]</b></div>' +
+    '</div>';
+
+  $("#cjCuerpo").innerHTML = html;
+  $("#cjCuerpo").scrollTop = 0;
+  $("#velo").classList.add("on");
+  $("#cajon").classList.add("on");
+  document.body.style.overflow = "hidden";
+  setTimeout(function(){ $("#cjX").focus(); }, 60);
+}
+
+function cerrarCajon(){
+  $("#velo").classList.remove("on");
+  $("#cajon").classList.remove("on");
+  document.body.style.overflow = "";
+  if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+}
+$("#velo").addEventListener("click", cerrarCajon);
+$("#cjX").addEventListener("click", cerrarCajon);
+$("#cjHab").addEventListener("click", function(){ avisar("Transportista habilitado. Se avisó al área de despacho."); cerrarCajon(); });
+$("#cjSol").addEventListener("click", function(){ avisar("Solicitud enviada al transportista con la lista de lo que falta."); });
+
+/* ==========================================================================
+   5) PALETA DE COMANDOS — reemplaza al menú lateral
+   ========================================================================== */
+var ACCIONES = [
+  { g:"Acciones", ic:"+", n:"Invitar a un transportista", s:"Le manda el enlace para cargar sus documentos", f:function(){ avisar("Invitación enviada."); } },
+  { g:"Acciones", ic:"⚑", n:"Ver solo lo bloqueado", s:"Filtra a los transportistas que no pueden cargar", f:function(){ ponFiltro("bl"); } },
+  { g:"Acciones", ic:"⏱", n:"Ver lo que vence en 30 días", s:"Filtra a los que están por vencer", f:function(){ ponFiltro("pv"); } },
+  { g:"Acciones", ic:"✓", n:"Ver flota habilitada", s:"Filtra a los que pueden cargar hoy", f:function(){ ponFiltro("ok"); } },
+  { g:"Acciones", ic:"↓", n:"Exportar el padrón a Excel", s:"Estado de habilitación de los 6 transportistas", f:function(){ avisar("Padrón exportado (demo)."); } },
+  { g:"Acciones", ic:"⇄", n:"Cambiar de comprador", s:"Minera Sur S.A.A. · Cementos del Sur · Refinería Ilo", f:function(){ avisar("Solo hay un comprador en esta demo."); } }
+];
+
+function ponFiltro(f){
+  filtro = f;
+  for (var k=0;k<fbtns.length;k++) fbtns[k].setAttribute("aria-pressed", fbtns[k].getAttribute("data-f") === f ? "true" : "false");
+  pintarTarjetas();
+  cerrarPal();
+  var el = $("#rejillaT");
+  if (el.scrollIntoView) el.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function normaliza(s){
+  return String(s).toLowerCase().normalize ? String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"") : String(s).toLowerCase();
+}
+
+function resultados(q){
+  q = normaliza(q).trim();
+  var out = [];
+  var i, n;
+
+  if (!q){
+    for (i=0;i<ACCIONES.length;i++) out.push({ g:"Acciones", ic:ACCIONES[i].ic, n:ACCIONES[i].n, s:ACCIONES[i].s, f:ACCIONES[i].f, fl:"" });
+    for (i=0;i<3;i++){
+      (function(t){
+        out.push({ g:"Transportistas", ic:t.corto.charAt(0), n:t.nom, s:"RUC " + t.ruc + " · " + ETIQT[t.estado], f:function(){ cerrarPal(); abrirCajon(t.id, null); }, fl:t.unidades + " un." });
+      })(TRANSPORTISTAS[i]);
+    }
+    return out;
+  }
+
+  for (i=0;i<TRANSPORTISTAS.length;i++){
+    (function(t){
+      if (normaliza(t.nom).indexOf(q) >= 0 || t.ruc.indexOf(q) >= 0 || normaliza(t.corto).indexOf(q) >= 0 || normaliza(t.sede).indexOf(q) >= 0){
+        out.push({ g:"Transportistas", ic:t.corto.charAt(0), n:t.nom, s:"RUC " + t.ruc + " · " + t.sede + " · " + ETIQT[t.estado], f:function(){ cerrarPal(); abrirCajon(t.id, null); }, fl:t.unidades + " un." });
+      }
+    })(TRANSPORTISTAS[i]);
+  }
+  n = 0;
+  for (i=0;i<UNIDADES.length && n<8;i++){
+    (function(u){
+      if (normaliza(u.placa).indexOf(q) >= 0){
+        n++;
+        out.push({ g:"Unidades", ic:"▮", n:u.placa, s:u.t.nom + " · " + ETIQ[u.e], f:function(){ cerrarPal(); abrirCajon(u.t.id, u.id); }, fl:"" });
+      }
+    })(UNIDADES[i]);
+  }
+  n = 0;
+  for (i=0;i<UNIDADES.length && n<6;i++){
+    (function(u){
+      if (normaliza(u.cond).indexOf(q) >= 0){
+        n++;
+        out.push({ g:"Conductores", ic:"◍", n:u.cond, s:"Asignado a " + u.placa + " · " + u.t.nom, f:function(){ cerrarPal(); abrirCajon(u.t.id, u.id); }, fl:"" });
+      }
+    })(UNIDADES[i]);
+  }
+  for (i=0;i<ACCIONES.length;i++){
+    (function(a){
+      if (normaliza(a.n).indexOf(q) >= 0 || normaliza(a.s).indexOf(q) >= 0){
+        out.push({ g:"Acciones", ic:a.ic, n:a.n, s:a.s, f:a.f, fl:"" });
+      }
+    })(ACCIONES[i]);
+  }
+  return out;
+}
+
+var palRes = [], palSel = 0;
+
+function pintarPal(){
+  var q = $("#palIn").value;
+  palRes = resultados(q);
+  palSel = 0;
+  var cont = $("#palLista");
+  if (palRes.length === 0){
+    cont.innerHTML = '<div class="pal-vacio"><b>Nada coincide con «' + esc(q) + '».</b><br>Prueba con una placa (' + esc(UNIDADES[0].placa) + '), un RUC o el nombre de una empresa.</div>';
+    return;
+  }
+  var html = "", grAct = "";
+  for (var i=0;i<palRes.length;i++){
+    var r = palRes[i];
+    if (r.g !== grAct){ grAct = r.g; html += '<div class="pal-gr">' + esc(grAct) + '</div>'; }
+    html += '<button class="pal-it" type="button" data-i="' + i + '"' + (i === 0 ? ' data-sel="1"' : '') + '>' +
+      '<span class="ic">' + esc(r.ic) + '</span>' +
+      '<span class="pr"><b>' + esc(r.n) + '</b><small>' + esc(r.s) + '</small></span>' +
+      (r.fl ? '<span class="fl">' + esc(r.fl) + '</span>' : '') +
+    '</button>';
+  }
+  cont.innerHTML = html;
+}
+
+function marcarSel(){
+  var its = $("#palLista").querySelectorAll(".pal-it");
+  for (var i=0;i<its.length;i++){
+    if (parseInt(its[i].getAttribute("data-i"), 10) === palSel){
+      its[i].setAttribute("data-sel","1");
+      if (its[i].scrollIntoView) its[i].scrollIntoView({ block:"nearest" });
+    } else {
+      its[i].removeAttribute("data-sel");
+    }
+  }
+}
+
+function abrirPal(){
+  $("#palVelo").classList.add("on");
+  $("#palIn").value = "";
+  pintarPal();
+  document.body.style.overflow = "hidden";
+  setTimeout(function(){ $("#palIn").focus(); }, 30);
+}
+function cerrarPal(){
+  $("#palVelo").classList.remove("on");
+  if (!$("#cajon").classList.contains("on")) document.body.style.overflow = "";
+}
+
+$("#btnBuscar").addEventListener("click", abrirPal);
+$("#palIn").addEventListener("input", pintarPal);
+$("#palVelo").addEventListener("click", function(ev){ if (ev.target === $("#palVelo")) cerrarPal(); });
+$("#palLista").addEventListener("click", function(ev){
+  var b = ev.target.closest(".pal-it");
+  if (!b) return;
+  var r = palRes[parseInt(b.getAttribute("data-i"), 10)];
+  if (r && r.f) r.f();
+});
+
+document.addEventListener("keydown", function(ev){
+  var abierta = $("#palVelo").classList.contains("on");
+  if ((ev.metaKey || ev.ctrlKey) && (ev.key === "k" || ev.key === "K")){
+    ev.preventDefault();
+    if (abierta) cerrarPal(); else abrirPal();
+    return;
+  }
+  if (ev.key === "Escape"){
+    if (abierta){ cerrarPal(); return; }
+    if ($("#cajon").classList.contains("on")){ cerrarCajon(); return; }
+  }
+  if (!abierta) return;
+  if (ev.key === "ArrowDown"){ ev.preventDefault(); palSel = Math.min(palSel+1, palRes.length-1); marcarSel(); }
+  else if (ev.key === "ArrowUp"){ ev.preventDefault(); palSel = Math.max(palSel-1, 0); marcarSel(); }
+  else if (ev.key === "Enter"){
+    ev.preventDefault();
+    var r = palRes[palSel];
+    if (r && r.f) r.f();
+  }
+});
+
+/* atajos secundarios */
+$("#btnAvisos").addEventListener("click", function(){
+  avisar("3 documentos vencieron esta semana. Están marcados en rojo en el portón.");
+});
+$("#btnWs").addEventListener("click", function(){
+  avisar("Espacio de trabajo: Minera Sur S.A.A. Esta demo trae un solo comprador.");
+});
+
+/* ==========================================================================
+   ARRANQUE
+   ========================================================================== */
+pintarPorton();
+pintarTarjetas();
+pintarVencimientos();
+
+})();
+</script>
+</body>
+</html>
